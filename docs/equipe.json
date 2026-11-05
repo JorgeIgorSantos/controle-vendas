@@ -1,0 +1,25 @@
+{
+  "instituicao": "Estácio S.A",
+  "curso": "[PREENCHER: CURSO]",
+  "disciplina": "Programação de Software Básico em C",
+  "professor": "Suzane Alfaia Dias",
+  "turma": "3003",
+  "cidade": "[PREENCHER: CIDADE]",
+  "ano": "2026",
+  "integrantes": [
+    "Rodrigo de Sousa Barbosa",
+    "Manoel de Sousa Santos",
+    "Lucas Robert Lopes Silva",
+    "Alan Freitas Miranda",
+    "Gabriel Henrique Maciel Leite",
+    "Jorge Igor Dos Santos Pinto"
+  ],
+  "matriculas": {
+    "Rodrigo de Sousa Barbosa": "202403618168",
+    "Manoel de Sousa Santos": "202402239521",
+    "Lucas Robert Lopes Silva": "201902231597",
+    "Alan Freitas Miranda": "202404621073",
+    "Gabriel Henrique Maciel Leite": "202403628988",
+    "Jorge Igor Dos Santos Pinto": "202309399989"
+  }
+}
