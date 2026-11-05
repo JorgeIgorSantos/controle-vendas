@@ -1,0 +1,26 @@
+DEPENDÊNCIAS INCORPORADAS AO PROJETO
+
+SQLite 3.50.4
+Arquivos: vendor/sqlite/sqlite3.c e sqlite3.h.
+Origem: https://www.sqlite.org/2025/sqlite-amalgamation-3500400.zip
+Licença: domínio público, conforme declaração no início dos arquivos.
+Finalidade: banco de dados transacional persistido em arquivo SQLite.
+O código é compilado localmente; não é preciso instalar libsqlite3-dev.
+
+cJSON 1.7.19
+Arquivos: vendor/cjson/cJSON.c, cJSON.h e LICENSE.
+Origem: https://github.com/DaveGamble/cJSON/tree/v1.7.19
+Licença: MIT, reproduzida em vendor/cjson/LICENSE.
+Finalidade: leitura e escrita de JSON na API em C.
+
+O restante da solução foi produzido para este projeto com assistência de Codex.
+Os integrantes devem estudar, revisar, adaptar e compreender o código entregue.
+Dados de demonstração são fictícios. A aplicação não usa serviços externos,
+CDNs, fontes remotas, telemetria ou APIs de terceiros durante a execução.
+
+FERRAMENTAS OPCIONAIS DE VERIFICAÇÃO E DOCUMENTAÇÃO (não são requisitos de execução)
+Playwright Core / Microsoft: licença Apache-2.0; https://github.com/microsoft/playwright
+ReportLab: licença BSD; https://www.reportlab.com/
+python-pptx: licença MIT; https://github.com/scanny/python-pptx
+As ferramentas ficam em .tools e não são incluídas no pacote de entrega.
+O script scripts/setup-tools.py reinstala versões definidas dentro do projeto.

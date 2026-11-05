@@ -1,0 +1,12 @@
+**
+!Dockerfile
+!.dockerignore
+!Makefile
+!include/
+!include/**
+!src/
+!src/**
+!vendor/
+!vendor/**
+!web/
+!web/**

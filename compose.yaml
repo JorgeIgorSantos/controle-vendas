@@ -1,0 +1,20 @@
+name: controle-vendas
+
+services:
+  app:
+    image: controle-vendas:local
+    build:
+      context: .
+      target: runtime
+    environment:
+      PORT: "${PORT:-8080}"
+    command: ["--host", "0.0.0.0", "--port", "${PORT:-8080}", "--db", "/app/data/vendas.db", "--demo"]
+    ports:
+      - "127.0.0.1:${PORT:-8080}:${PORT:-8080}"
+    volumes:
+      - vendas_dados:/app/data
+    restart: on-failure
+    stop_grace_period: 10s
+
+volumes:
+  vendas_dados:

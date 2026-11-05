@@ -1,0 +1,15 @@
+build/*.o
+build/vendas
+data/*.db*
+artifacts/*.zip
+tests/.runtime/
+.tools/
+node_modules/
+__pycache__/
+
+# Arquivos locais de compilação, revisão e bancos de trabalho
+build/
+tmp/
+artifacts/qa/
+# Banco fictício que acompanha a entrega
+!data/exemplo.db
