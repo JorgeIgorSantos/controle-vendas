@@ -1,0 +1,39 @@
+{
+  "executed_at": "2026-11-05T19:30:20.534705+00:00",
+  "result": "APROVADO",
+  "files": [
+    {
+      "path": "docs/relatorio-tecnico.pdf",
+      "pages": 14,
+      "sha256": "319d27231b4fe3c4cdaeb6a6f6763dd5f50a21aa224a7f1f8d06e6a778001162",
+      "checks": [
+        "sem páginas duplicadas ou vazias",
+        "texto dentro dos limites das páginas",
+        "renderização visual conferida",
+        "seis nomes e matrículas com uma ocorrência cada"
+      ]
+    },
+    {
+      "path": "docs/apresentacao.pdf",
+      "pages": 12,
+      "sha256": "b8a7a4ba131af89acec6614025dd5bd6319d6814325f1eae292a6f51f4756b72",
+      "checks": [
+        "sem páginas duplicadas ou vazias",
+        "texto dentro dos limites das páginas",
+        "renderização visual conferida",
+        "seis nomes e matrículas com uma ocorrência cada"
+      ]
+    },
+    {
+      "path": "artifacts/relatorio-vendas-exemplo.pdf",
+      "pages": 1,
+      "sha256": "211cd1b32d378aec5264c48f385c6eb1d7317435d3f3c88f5d7a2c9f0feed019",
+      "checks": [
+        "sem páginas duplicadas ou vazias",
+        "texto dentro dos limites das páginas",
+        "renderização visual conferida",
+        "totais conferidos com data/exemplo.db"
+      ]
+    }
+  ]
+}
