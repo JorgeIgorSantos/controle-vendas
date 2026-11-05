@@ -1,0 +1,10 @@
+Verificação do ambiente de entrega
+cc (Ubuntu 13.3.0-6ubuntu2~24.04.1) 13.3.0
+GNU Make 4.3
+Linux 6.17.0-1033-oem x86_64
+Linguagem: C11, API POSIX, sem C++
+SQLite incorporado: 3.50.4
+cJSON incorporado: 1.7.19
+Flags dos módulos próprios: -std=c11 -O2 -Wall -Wextra -Wpedantic -Werror
+Teste de memória: -fsanitize=address,undefined -fno-omit-frame-pointer; SQLite/cJSON sem instrumentação
+Backend: 127.0.0.1; banco: data/vendas.db; frontend: web/

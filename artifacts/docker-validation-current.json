@@ -1,0 +1,14 @@
+{
+  "executed_at": "2026-11-05T19:20:51.732244+00:00",
+  "result": "APROVADO",
+  "checks": [
+    "Build da imagem final concluído",
+    "Contêiner saudável e executando como UID 10001",
+    "Frontend, arquivos estáticos e API respondem HTTP 200",
+    "SQLite em volume nomeado /app/data com caminho absoluto",
+    "18 testes de integração aprovados",
+    "Seis nomes e matrículas conferidos nos PDFs e no PPTX"
+  ],
+  "image": "sha256:511a6a287a62679b8aa06cb54c5498df2279858f439d6609a41e2ce1e694e2ea",
+  "port": 8080
+}

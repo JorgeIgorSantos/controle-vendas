@@ -1,0 +1,99 @@
+{
+  "executed_at": "2026-10-22T14:34:55.091793+00:00",
+  "command": "make sanitize",
+  "total": 18,
+  "failures": 0,
+  "errors": 0,
+  "tests": [
+    {
+      "test": "test_01_empty_database",
+      "description": "Banco vazio retorna listas e totais zerados sem erro.",
+      "result": "APROVADO"
+    },
+    {
+      "test": "test_02_product_crud",
+      "description": "Cadastro, listagem, pesquisa, atualização e exclusão funcionam.",
+      "result": "APROVADO"
+    },
+    {
+      "test": "test_03_duplicate_identifier",
+      "description": "Código duplicado é rejeitado, inclusive com letras em caixa diferente.",
+      "result": "APROVADO"
+    },
+    {
+      "test": "test_04_invalid_product",
+      "description": "Campos vazios, preços inválidos e estoques fracionários/negativos são rejeitados.",
+      "result": "APROVADO"
+    },
+    {
+      "test": "test_05_sale_total_stock_snapshot",
+      "description": "Venda calcula total no servidor, baixa estoque e preserva preço/nome histórico.",
+      "result": "APROVADO"
+    },
+    {
+      "test": "test_06_insufficient_stock_atomicity",
+      "description": "Falha em um item não altera estoque de nenhum produto nem registra venda parcial.",
+      "result": "APROVADO"
+    },
+    {
+      "test": "test_07_invalid_sale",
+      "description": "Venda vazia, item repetido, quantidade inválida, pagamento e desconto são validados.",
+      "result": "APROVADO"
+    },
+    {
+      "test": "test_08_cancellation",
+      "description": "Cancelar devolve estoque, exclui total do relatório e impede devolução dupla.",
+      "result": "APROVADO"
+    },
+    {
+      "test": "test_09_reports_and_filters",
+      "description": "Relatório agrega exatamente vendas concluídas; filtros de data e busca funcionam.",
+      "result": "APROVADO"
+    },
+    {
+      "test": "test_10_missing_and_invalid_routes",
+      "description": "Registros inexistentes, métodos inválidos e arquivos fora da interface não são expostos.",
+      "result": "APROVADO"
+    },
+    {
+      "test": "test_11_persistence_after_restart",
+      "description": "Reiniciar o executável recupera produtos, vendas e relatório do mesmo arquivo SQLite.",
+      "result": "APROVADO"
+    },
+    {
+      "test": "test_12_local_origin_and_malformed_json",
+      "description": "Origem externa, JSON malformado e conteúdo não JSON são recusados.",
+      "result": "APROVADO"
+    },
+    {
+      "test": "test_13_money_precision",
+      "description": "Cálculo inteiro mantém a precisão de centavos (3 × R$ 0,10 − R$ 0,01).",
+      "result": "APROVADO"
+    },
+    {
+      "test": "test_14_database_constraints",
+      "description": "O banco também recusa estoque negativo e código duplicado, protegendo a integridade.",
+      "result": "APROVADO"
+    },
+    {
+      "test": "test_15_static_interface",
+      "description": "Servidor C entrega HTML, JavaScript, CSS e ícone com tipos de conteúdo corretos.",
+      "result": "APROVADO"
+    },
+    {
+      "test": "test_16_cancellation_overflow_is_atomic",
+      "description": "Cancelamento que estouraria estoque é recusado sem mudar a venda.",
+      "result": "APROVADO"
+    },
+    {
+      "test": "test_17_demo_idempotence",
+      "description": "Exemplos opcionais são coerentes e não se duplicam ao reiniciar com --demo.",
+      "result": "APROVADO"
+    },
+    {
+      "test": "test_18_shutdown_saves_database",
+      "description": "Opção da interface encerra o servidor com sucesso e preserva o arquivo.",
+      "result": "APROVADO"
+    }
+  ]
+}

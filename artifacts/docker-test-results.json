@@ -1,0 +1,16 @@
+{
+  "executed_at": "2026-10-22T14:34:36.233248+00:00",
+  "result": "APROVADO",
+  "checks": [
+    "Frontend e API acessíveis pela porta publicada 18093",
+    "Venda real calcula total, baixa estoque e atualiza relatório no contêiner",
+    "Volume preserva produto e venda após down/up; exemplos não se duplicam",
+    "Cancelamento devolve estoque e ajusta totais após recriar o contêiner",
+    "Aplicação executa sem root e healthcheck HTTP está saudável",
+    "Encerramento pela interface é respeitado; up reinicia sem perda dos dados"
+  ],
+  "project": "controle-vendas-verificacao",
+  "port": 18093,
+  "image": "sha256:13c0bf8ff66d8a73aea297115e32518a2af93d63afc173e7cfdcaa1a6f3feb80",
+  "user": "10001"
+}

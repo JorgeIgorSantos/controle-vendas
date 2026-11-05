@@ -1,0 +1,14 @@
+{
+  "copied_at": "2026-10-22T14:35:43.203347+00:00",
+  "source": "data/vendas.db",
+  "backup": "data/vendas-antes-docker-20261022-113542.db",
+  "previous_docker_backup": "data/vendas-docker-inicial-20261022-113542.db",
+  "destination": "controle-vendas_vendas_dados:/app/data/vendas.db",
+  "sha256": "b52bc9f09eee109f90339a0ad8868099a55a7611ce8283f94785ccd87b8bf275",
+  "records": {
+    "products": 8,
+    "sales": 7,
+    "sale_items": 9
+  },
+  "completed_total_cents": 58580
+}

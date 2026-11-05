@@ -1,0 +1,43 @@
+{
+  "executed_at": "2026-10-22T14:21:36.538Z",
+  "command": "node tests/test_ui.cjs",
+  "total": 9,
+  "tests": [
+    {
+      "test": "Dashboard com dados reais do SQLite",
+      "result": "APROVADO"
+    },
+    {
+      "test": "Cadastro pelo formulário atualiza o catálogo",
+      "result": "APROVADO"
+    },
+    {
+      "test": "Código duplicado exibe erro visível e mantém formulário",
+      "result": "APROVADO"
+    },
+    {
+      "test": "Edição do preço e exclusão confirmada pelo navegador",
+      "result": "APROVADO"
+    },
+    {
+      "test": "Carrinho calcula venda e backend baixa estoque",
+      "result": "APROVADO"
+    },
+    {
+      "test": "Detalhe e cancelamento devolvem estoque e preservam histórico",
+      "result": "APROVADO"
+    },
+    {
+      "test": "Relatório exporta CSV com total correto e gera impressão PDF",
+      "result": "APROVADO"
+    },
+    {
+      "test": "Layout em celular sem transbordamento horizontal",
+      "result": "APROVADO"
+    },
+    {
+      "test": "Nenhum erro JavaScript durante os fluxos",
+      "result": "APROVADO"
+    }
+  ]
+}
