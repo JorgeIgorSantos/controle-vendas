@@ -5,6 +5,7 @@ INÍCIO RÁPIDO
 -------------
 Abra o terminal nesta pasta e execute:
 
+  chmod +x iniciar.sh         # necessário após baixar pelo GitHub
   ./iniciar.sh
 
 Abra no navegador:
