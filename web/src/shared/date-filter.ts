@@ -5,7 +5,7 @@ import { Workspace } from './workspace';
 @Component({
   selector: 'app-date-filter',
   template: `
-    <form class="date-filter" [id]="prefix() + '-dates'" (submit)="apply($event, from.value, to.value)">
+    <form class="date-filter" aria-label="Filtrar por período" [id]="prefix() + '-dates'" (submit)="apply($event, from.value, to.value)">
       <label [for]="prefix() + '-from'">De</label>
       <input #from type="date" [id]="prefix() + '-from'" [value]="dates().from"
         min="1900-01-01" max="9999-12-31" required aria-label="Data inicial">

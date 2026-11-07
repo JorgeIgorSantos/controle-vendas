@@ -32,6 +32,8 @@ O comando `make` compila o servidor e o Angular. O servidor C entrega a interfac
 - [Instruções completas](README.txt)
 - [Requisitos e implementação](docs/requisitos.md)
 - [Roteiro da demonstração](docs/roteiro-apresentacao.txt)
+- [Banco de demonstração](data/README.txt)
+- [Evidências de testes](artifacts/README.txt)
 - [Licenças e referências de terceiros](THIRD_PARTY_NOTICES.txt)
 
 O [relatório técnico](docs/relatorio-tecnico.pdf) e os [slides](docs/apresentacao.pdf) são referências da versão anterior.

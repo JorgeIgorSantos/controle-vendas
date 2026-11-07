@@ -1,6 +1,6 @@
 # Conferência do PDF — Sistema de controle de vendas
 
-Fonte: `Projeto_Pratico_C_4_Pontos.pdf`, 4 páginas, lidas integralmente. A aplicação é em C11, dividida em `.c` e `.h`, e oferece interface gráfica no navegador. Os arquivos de interface usam as linguagens do navegador. Não há dependência de C++.
+Fonte: `Projeto_Pratico_C_4_Pontos.pdf`, 4 páginas, lidas integralmente. A aplicação é em C11, dividida em `.c` e `.h`, e oferece interface gráfica no navegador. A interface gráfica usa Angular e TypeScript. Não há dependência de C++.
 
 | Requisito obrigatório | Implementação | Evidência |
 |---|---|---|

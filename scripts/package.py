@@ -23,7 +23,7 @@ for name in qa_names:
     item = ROOT / 'artifacts' / 'qa' / name
     if item.is_file():
         files.append(item)
-for name in ['README.md','README.txt','Makefile','iniciar.sh','Dockerfile','compose.yaml','.dockerignore','THIRD_PARTY_NOTICES.txt','Projeto_Pratico_C_4_Pontos.pdf','data/exemplo.db','.gitignore']:
+for name in ['README.md','README.txt','Makefile','iniciar.sh','Dockerfile','compose.yaml','.dockerignore','THIRD_PARTY_NOTICES.txt','Projeto_Pratico_C_4_Pontos.pdf','data/exemplo.db','data/README.txt','.gitignore']:
     files.append(ROOT/name)
 files.extend(ROOT/'web'/name for name in ['angular.json','package.json','package-lock.json','tsconfig.json'])
 with zipfile.ZipFile(DEST,'w',zipfile.ZIP_DEFLATED,compresslevel=6) as bundle:

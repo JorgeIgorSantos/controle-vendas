@@ -16,6 +16,7 @@
 #define HEADER_LIMIT 8192
 #define PATH_LIMIT 512
 #define QUERY_LIMIT 2048
+#define STATIC_FILE_LIMIT (2 * 1024 * 1024)
 static volatile sig_atomic_t running = 1;
 static void stop_server(int signum) { (void)signum; running = 0; }
 void http_stop(void) { running = 0; }
@@ -81,7 +82,7 @@ static void static_file(App *app, int fd, const Request *req) {
     if (!file) { send_error(fd, 404, "Arquivo da interface não encontrado. Execute make na pasta do projeto."); return; }
     if (fseek(file, 0, SEEK_END) != 0) { fclose(file); send_error(fd, 500, "Falha ao ler arquivo."); return; }
     long size = ftell(file);
-    if (size < 0 || size > 2097152 || fseek(file, 0, SEEK_SET) != 0) { fclose(file); send_error(fd, 500, "Arquivo inválido."); return; }
+    if (size < 0 || size > STATIC_FILE_LIMIT || fseek(file, 0, SEEK_SET) != 0) { fclose(file); send_error(fd, 500, "Arquivo inválido."); return; }
     char *content = malloc((size_t)size + 1);
     if (!content) { fclose(file); send_error(fd, 500, "Memória insuficiente."); return; }
     size_t read_size = fread(content, 1, (size_t)size, file);

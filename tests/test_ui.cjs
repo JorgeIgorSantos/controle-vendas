@@ -40,7 +40,8 @@ async function main(){
     await page.goto(base);
     await page.getByRole('heading',{name:'Produtos',exact:true}).waitFor();
     await page.getByRole('heading',{name:'Nenhum produto cadastrado'}).waitFor();
-    assert.equal(await page.locator('nav a').count(),3);
+    const menu = await page.locator('nav a').allTextContents();
+    assert.deepEqual(menu.map(label=>label.trim()), ['Produtos', 'Vendas', 'Relatórios']);
   });
   await check('Cadastro pelo formulário atualiza o catálogo',async()=>{
     await page.goto(base+'/#products');await page.getByRole('heading',{name:'Produtos'}).waitFor();

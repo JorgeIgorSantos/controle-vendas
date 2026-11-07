@@ -1,6 +1,7 @@
 {
   "name": "controle-vendas",
   "version": "1.0.0",
+  "description": "Interface Angular do sistema de controle de vendas.",
   "private": true,
   "scripts": {
     "build": "ng build"

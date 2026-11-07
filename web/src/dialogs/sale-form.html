@@ -59,7 +59,7 @@
     </section>
   </div>
   <div class="modal-footer">
-    <small>O estoque será atualizado ao concluir a venda.</small>
+    <small>Ao finalizar, as quantidades vendidas serão descontadas do estoque.</small>
     <div>
       <button type="button" class="button" [disabled]="workspace.busy()" (click)="closeRequested.emit()">Voltar</button>
       <button type="submit" class="button primary" id="finish-sale" [disabled]="!cart().length || workspace.busy()">

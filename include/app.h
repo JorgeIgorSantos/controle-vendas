@@ -13,7 +13,7 @@
 #define MAX_PRICE_CENTS 100000000
 #define MAX_SALE_CENTS 9000000000000LL
 
-/* Os valores monetários são inteiros em centavos, inclusive no banco. */
+/* Os campos com sufixo _cents armazenam centavos inteiros, inclusive no banco. */
 typedef struct {
     int64_t id;
     char sku[41];
