@@ -3,11 +3,17 @@ CPPFLAGS = -Iinclude -Ivendor/sqlite -Ivendor/cjson -D_POSIX_C_SOURCE=200809L
 CFLAGS ?= -std=c11 -O2 -Wall -Wextra -Wpedantic -Werror
 LDLIBS = -lm -lpthread -ldl
 BUILD_DIR ?= build
+WEB_FILES = $(if $(wildcard web/src),$(shell find web/src)) web/angular.json web/tsconfig.json web/package.json web/package-lock.json
 SOURCES = src/main.c src/http.c src/database.c src/utils.c src/api.c
 OBJECTS = $(patsubst src/%.c,$(BUILD_DIR)/%.o,$(SOURCES))
 
-.PHONY: all run demo test clean sanitize package
-all: $(BUILD_DIR)/vendas
+.PHONY: all backend run test clean sanitize package
+all: backend web/dist/browser/index.html
+backend: $(BUILD_DIR)/vendas
+web/node_modules/.package-lock.json: web/package.json web/package-lock.json
+	npm --prefix web ci --include=dev
+web/dist/browser/index.html: $(WEB_FILES) web/node_modules/.package-lock.json
+	npm --prefix web run build
 $(BUILD_DIR):
 	mkdir -p $(BUILD_DIR) data
 $(BUILD_DIR)/%.o: src/%.c include/app.h | $(BUILD_DIR)
@@ -19,9 +25,7 @@ $(BUILD_DIR)/cJSON.o: vendor/cjson/cJSON.c vendor/cjson/cJSON.h | $(BUILD_DIR)
 $(BUILD_DIR)/vendas: $(OBJECTS) $(BUILD_DIR)/sqlite3.o $(BUILD_DIR)/cJSON.o
 	$(CC) $(CFLAGS) $^ $(LDLIBS) -o $@
 run: all
-	./build/vendas
-demo: all
-	./build/vendas --demo
+	./$(BUILD_DIR)/vendas
 test: all
 	python3 tests/test_api.py
 sanitize:
@@ -30,4 +34,5 @@ sanitize:
 package:
 	python3 scripts/package.py
 clean:
-	rm -f build/*.o build/vendas
+	rm -f $(BUILD_DIR)/*.o $(BUILD_DIR)/vendas
+	rm -rf web/dist

@@ -1,0 +1,52 @@
+@if (products().data; as products) {
+  <div class="page-heading">
+    <div><h1>Produtos</h1><p>Cadastro e controle de estoque.</p></div>
+    <button class="button primary" (click)="workspace.openProduct()"><app-icon name="plus" [size]="16" />Novo produto</button>
+  </div>
+  <section class="panel">
+    <div class="filter-bar">
+      <div class="search-box">
+        <app-icon name="search" [size]="16" />
+        <input type="search" id="product-search" placeholder="Buscar por nome, código ou categoria…"
+          aria-label="Buscar produtos" [(ngModel)]="workspace.productSearch">
+      </div>
+    </div>
+    @if (filtered().length) {
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr><th>Produto</th><th>Categoria</th><th class="right">Preço unitário</th>
+              <th>Estoque</th><th>Situação</th><th class="right">Ações</th></tr>
+          </thead>
+          <tbody>
+            @for (product of filtered(); track product.id) {
+              <tr>
+                <td><div class="product-cell"><div><strong>{{ product.name }}</strong><small>{{ product.sku }}</small></div></div></td>
+                <td>{{ product.category }}</td>
+                <td class="right"><strong>{{ product.price_cents | brl }}</strong></td>
+                <td>{{ product.stock | brNumber }} un.</td>
+                <td><span class="badge" [class.cancelled]="!product.active">{{ product.active ? 'Ativo' : 'Inativo' }}</span></td>
+                <td><div class="actions">
+                  <button class="icon-button" (click)="workspace.openProduct(product.id)"
+                    [title]="'Editar ' + product.name" [attr.aria-label]="'Editar ' + product.name">
+                    <app-icon name="edit" [size]="16" />
+                  </button>
+                  <button class="icon-button danger" (click)="deleteProduct(product)"
+                    [title]="'Excluir ' + product.name" [attr.aria-label]="'Excluir ' + product.name">
+                    <app-icon name="trash" [size]="16" />
+                  </button>
+                </div></td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+      <div class="table-footer"><span>{{ filtered().length | brNumber }} produtos encontrados</span><span>Preços em reais (R$)</span></div>
+    } @else {
+      <app-empty-state [heading]="products.length ? 'Nenhum produto encontrado' : 'Nenhum produto cadastrado'"
+        description="Cadastre um produto ou altere o termo da busca." />
+    }
+  </section>
+} @else {
+  <app-load-status [error]="products().error" />
+}

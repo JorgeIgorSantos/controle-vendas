@@ -20,31 +20,21 @@ typedef struct {
     char name[121];
     char category[61];
     int64_t price_cents;
-    int stock;
-    int min_stock;
+    int64_t stock;
     int active;
-    char notes[501];
 } Product;
 
 typedef struct {
     int64_t product_id;
-    char sku[41];
-    char name[121];
-    int quantity;
-    int64_t unit_price_cents;
-    int64_t total_cents;
+    int64_t quantity;
 } SaleItem;
 
 typedef struct {
     int64_t id;
     char customer[121];
     char payment_method[20];
-    int64_t subtotal_cents;
-    int64_t discount_cents;
     int64_t total_cents;
-    char notes[501];
     SaleItem *items;
-    size_t item_count;
 } Sale;
 
 typedef struct {
@@ -54,9 +44,9 @@ typedef struct {
 
 typedef struct {
     char method[8];
-    char path[512];
-    char query[2048];
-    char *body;
+    const char *path;
+    const char *query;
+    const char *body;
 } Request;
 
 typedef struct {
@@ -65,10 +55,8 @@ typedef struct {
 } Response;
 
 int db_open(App *app, const char *path);
-int db_seed(App *app);
 int db_exec(App *app, const char *sql);
-int db_prepare(App *app, sqlite3_stmt **stmt, const char *sql);
-void db_close(App *app);
+sqlite3_stmt *db_prepare(App *app, const char *sql);
 Response api_route(App *app, const Request *request);
 Response json_response(int status, cJSON *json);
 Response error_response(int status, const char *message);

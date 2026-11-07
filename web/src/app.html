@@ -1,0 +1,27 @@
+<a class="skip-link" href="#view" (click)="skipToContent($event, content)">Ir para o conteúdo</a>
+<aside class="sidebar">
+  <a class="brand" routerLink="/products" aria-label="Venda, início">
+    <span class="brand-icon" aria-hidden="true">v<span>•</span></span>venda<span class="brand-dot">.</span>
+  </a>
+  <div class="store-name">Minha loja</div>
+  <nav aria-label="Menu principal">
+    @for (page of pages; track page.path) {
+      <a [routerLink]="['/', page.path]" routerLinkActive="active" ariaCurrentWhenActive="page">
+        <app-icon [name]="page.icon" />{{ page.name }}
+      </a>
+    }
+  </nav>
+</aside>
+<div class="app-shell">
+  <header class="topbar">
+    <div class="breadcrumb">Minha loja <span>/</span> <strong id="breadcrumb">{{ breadcrumb() }}</strong></div>
+    <div class="topbar-right"><time id="current-date">{{ date }}</time></div>
+  </header>
+  <main #content id="view" tabindex="-1"><router-outlet /></main>
+</div>
+<app-dialogs />
+<div id="toasts" class="toasts" aria-live="polite" aria-atomic="false">
+  @for (toast of workspace.toasts(); track toast.id) {
+    <div class="toast" [class.error]="toast.error">{{ toast.message }}</div>
+  }
+</div>

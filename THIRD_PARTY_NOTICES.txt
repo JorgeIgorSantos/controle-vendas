@@ -13,6 +13,13 @@ Origem: https://github.com/DaveGamble/cJSON/tree/v1.7.19
 Licença: MIT, reproduzida em vendor/cjson/LICENSE.
 Finalidade: leitura e escrita de JSON na API em C.
 
+Angular
+Origem: https://github.com/angular/angular
+Licença: MIT.
+Finalidade: interface gráfica no navegador.
+As versões dos pacotes estão em web/package-lock.json. O build gera os avisos
+dos pacotes incorporados em web/dist/3rdpartylicenses.txt.
+
 O restante da solução foi produzido para este projeto com assistência de Codex.
 Os integrantes devem estudar, revisar, adaptar e compreender o código entregue.
 Dados de demonstração são fictícios. A aplicação não usa serviços externos,

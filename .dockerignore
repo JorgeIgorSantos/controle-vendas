@@ -10,3 +10,6 @@
 !vendor/**
 !web/
 !web/**
+web/node_modules/
+web/.angular/
+web/dist/

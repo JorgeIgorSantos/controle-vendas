@@ -5,7 +5,15 @@ COPY Makefile ./
 COPY include/ include/
 COPY src/ src/
 COPY vendor/ vendor/
-RUN make -j2
+RUN make -j2 backend
+
+FROM node:24-bookworm-slim AS frontend
+
+WORKDIR /app/web
+COPY web/package*.json ./
+RUN npm ci --include=dev
+COPY web/ ./
+RUN npm run build
 
 FROM debian:bookworm-slim AS runtime
 
@@ -13,7 +21,8 @@ RUN mkdir -p /app/data && chown 10001:10001 /app/data
 
 WORKDIR /app
 COPY --from=build /app/build/vendas ./vendas
-COPY web/ web/
+COPY --from=frontend /app/web/dist/browser/ web/dist/browser/
+COPY --from=frontend /app/web/dist/3rdpartylicenses.txt web/dist/
 
 USER 10001:10001
 ENV PORT=8080

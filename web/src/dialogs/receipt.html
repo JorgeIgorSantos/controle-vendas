@@ -1,0 +1,35 @@
+@let receipt = sale();
+<div class="modal-body">
+  <div class="detail-meta">
+    <div><small>Cliente</small><strong>{{ receipt.customer || 'Cliente balcão' }}</strong></div>
+    <div><small>Pagamento</small><strong>{{ paymentNames[receipt.payment_method] }}</strong></div>
+    <div><small>Situação</small><span class="badge" [class.cancelled]="receipt.status === 'cancelled'">
+      {{ receipt.status === 'cancelled' ? 'Cancelada' : 'Concluída' }}
+    </span></div>
+    @if (receipt.cancelled_at; as cancelledAt) {
+      <div><small>Cancelada em</small><strong>{{ cancelledAt | belemTime }}</strong></div>
+    }
+  </div>
+  <div class="table-wrap receipt-table"><table>
+    <thead><tr><th>Produto</th><th class="right">Qtd.</th><th class="right">Unitário</th><th class="right">Total</th></tr></thead>
+    <tbody>
+      @for (item of receipt.items; track item.id) {
+        <tr><td><strong>{{ item.name }}</strong><span class="stock-note">{{ item.sku }}</span></td>
+          <td class="right">{{ item.quantity | brNumber }}</td><td class="right">{{ item.unit_price_cents | brl }}</td>
+          <td class="right"><strong>{{ item.total_cents | brl }}</strong></td></tr>
+      }
+    </tbody>
+  </table></div>
+  <div class="sale-totals">
+    @if (receipt.discount_cents) {
+      <div><span>Subtotal</span><span>{{ receipt.subtotal_cents | brl }}</span></div>
+      <div><span>Desconto</span><span>− {{ receipt.discount_cents | brl }}</span></div>
+    }
+    <div class="grand-total"><span>Total da venda</span><strong>{{ receipt.total_cents | brl }}</strong></div>
+  </div>
+  @if (receipt.notes) { <p class="receipt-notes">{{ receipt.notes }}</p> }
+  <p class="report-note">Comprovante de controle interno. Não é um documento fiscal.</p>
+</div>
+<div class="modal-footer">
+  <button class="button primary" (click)="workspace.modal.set(null)">Concluir</button>
+</div>

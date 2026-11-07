@@ -1,0 +1,22 @@
+@if (sales().data; as sales) {
+  <div class="page-heading">
+    <div><h1>Vendas</h1><p>Histórico e detalhes das vendas.</p></div>
+    <button class="button primary" (click)="workspace.openSale()"><app-icon name="plus" [size]="16" />Nova venda</button>
+  </div>
+  <section class="panel">
+    <div class="filter-bar">
+      <form class="search-box" id="sales-search-form" (submit)="search($event, searchField.value)">
+        <app-icon name="search" [size]="16" />
+        <input #searchField type="search" id="sales-search" placeholder="Cliente ou número da venda…"
+          aria-label="Buscar vendas" [value]="workspace.salesSearch()">
+      </form>
+      <app-date-filter prefix="sales" [dates]="workspace.salesDates()" (applyDates)="workspace.salesDates.set($event)" />
+    </div>
+    <app-sales-table [sales]="sales" />
+    <div class="table-footer">
+      <span>{{ sales.length | brNumber }} vendas encontradas</span>
+    </div>
+  </section>
+} @else {
+  <app-load-status [error]="sales().error" />
+}

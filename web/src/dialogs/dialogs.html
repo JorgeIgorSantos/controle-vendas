@@ -1,0 +1,28 @@
+@let active = workspace.modal();
+<dialog #modal id="modal" aria-labelledby="modal-title" [class.sale-dialog]="active?.kind === 'sale'" (cancel)="close($event)">
+  @if (heading(); as heading) {
+    <div class="modal-header">
+      <div><h2 id="modal-title">{{ heading.title }}</h2><p>{{ heading.subtitle }}</p></div>
+      <button type="button" class="icon-button" aria-label="Fechar janela" [disabled]="workspace.busy()" (click)="close()">
+        <app-icon name="close" [size]="20" />
+      </button>
+    </div>
+  }
+  @if (active) {
+    @switch (active.kind) {
+      @case ('product') { <app-product-form [product]="active.product" /> }
+      @case ('sale') { <app-sale-form [products]="active.products" (closeRequested)="close()" /> }
+      @case ('receipt') { <app-receipt [sale]="active.sale" /> }
+    }
+  }
+</dialog>
+<dialog #confirmation id="confirm-modal" class="confirm-dialog" aria-labelledby="confirm-title"
+  (cancel)="$event.preventDefault(); workspace.finishConfirmation(false)">
+  @if (workspace.confirmation(); as confirm) {
+    <div class="modal-body"><h2 id="confirm-title">{{ confirm.title }}</h2><p>{{ confirm.message }}</p></div>
+    <div class="modal-footer">
+      <button class="button" autofocus (click)="workspace.finishConfirmation(false)">Voltar</button>
+      <button class="button danger" (click)="workspace.finishConfirmation(true)">{{ confirm.action }}</button>
+    </div>
+  }
+</dialog>

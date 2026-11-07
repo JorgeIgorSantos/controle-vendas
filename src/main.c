@@ -5,16 +5,14 @@
 #include <string.h>
 
 int main(int argc, char **argv) {
-    int port = 8080, demo = 0;
+    int port = 8080;
     const char *host = "127.0.0.1";
     const char *db_path = "data/vendas.db";
-    App app = {NULL, "web"};
+    App app = {.web_root = "web/dist/browser"};
     for (int i = 1; i < argc; i++) {
-        if (strcmp(argv[i], "--demo") == 0) demo = 1;
-        else if (strcmp(argv[i], "--help") == 0) {
-            puts("Uso: ./build/vendas [--host 127.0.0.1] [--port 8080] [--db data/vendas.db] [--web web] [--demo]\n"
-                 "Abra http://127.0.0.1:8080 no navegador. Ctrl+C encerra o servidor.\n"
-                 "--demo cria exemplos somente se o banco estiver vazio.");
+        if (strcmp(argv[i], "--help") == 0) {
+            puts("Uso: ./build/vendas [--host 127.0.0.1] [--port 8080] [--db data/vendas.db] [--web web/dist/browser]\n"
+                 "Abra http://127.0.0.1:8080 no navegador. Ctrl+C encerra o servidor.");
             return 0;
         } else if (i + 1 < argc && strcmp(argv[i], "--db") == 0) db_path = argv[++i];
         else if (i + 1 < argc && strcmp(argv[i], "--host") == 0) host = argv[++i];
@@ -33,8 +31,9 @@ int main(int argc, char **argv) {
             return 1;
         }
     }
-    if (!db_open(&app, db_path) || (demo && !db_seed(&app))) { db_close(&app); return 1; }
-    int result = http_run(&app, host, port);
-    db_close(&app);
+    int result = 1;
+    if (db_open(&app, db_path))
+        result = http_run(&app, host, port);
+    sqlite3_close(app.db);
     return result;
 }

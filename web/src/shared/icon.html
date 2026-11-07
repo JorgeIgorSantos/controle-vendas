@@ -1,0 +1,17 @@
+<svg [attr.width]="size()" [attr.height]="size()" viewBox="0 0 24 24"
+  fill="none" stroke="currentColor" stroke-width="1.65" stroke-linecap="round"
+  stroke-linejoin="round" aria-hidden="true">
+  @switch (name()) {
+    @case ('box') { <path d="m12 3 9 5-9 5-9-5 9-5Z"/><path d="M3 8v9l9 5 9-5V8M12 13v9M7.5 5.5l9 5"/> }
+    @case ('bag') { <path d="M5 7h14l1 14H4L5 7Z"/><path d="M8 8V6a4 4 0 0 1 8 0v2"/> }
+    @case ('chart') { <path d="M4 3v17h17M8 15v-4M13 15V7M18 15V4"/> }
+    @case ('plus') { <path d="M12 5v14M5 12h14"/> }
+    @case ('search') { <circle cx="10.5" cy="10.5" r="6.5"/><path d="m16 16 5 5"/> }
+    @case ('edit') { <path d="m15 5 4 4M4 20l4-1L20 7a2.8 2.8 0 0 0-4-4L4 15l-1 6Z"/> }
+    @case ('trash') { <path d="M3 6h18M9 6V3h6v3M5 6l1 15h12l1-15M10 10v7M14 10v7"/> }
+    @case ('close') { <path d="m6 6 12 12M6 18 18 6"/> }
+    @case ('eye') { <path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7S2 12 2 12Z"/><circle cx="12" cy="12" r="3"/> }
+    @case ('check') { <path d="m5 12 4 4L19 6"/> }
+    @case ('refresh') { <path d="M20 7v5h-5M4 17v-5h5M5.5 7a8 8 0 0 1 13-2L20 7M4 17l1.5 2a8 8 0 0 0 13-2"/> }
+  }
+</svg>

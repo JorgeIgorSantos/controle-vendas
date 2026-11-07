@@ -1,0 +1,44 @@
+<form id="product-form" ngNativeValidate (ngSubmit)="save()">
+  <div class="modal-body">
+    @if (error()) { <div class="form-error visible" role="alert">{{ error() }}</div> }
+    @let fields = form();
+    <div class="form-grid">
+      <div class="form-field">
+        <label for="p-sku">Código do produto <span>*</span></label>
+        <input id="p-sku" name="sku" required maxlength="40" placeholder="Ex.: CAF-001" [(ngModel)]="fields.sku">
+        <small>Código único no catálogo.</small>
+      </div>
+      <div class="form-field">
+        <label for="p-category">Categoria <span>*</span></label>
+        <input id="p-category" name="category" required maxlength="60" list="categories"
+          placeholder="Ex.: Mercearia" [(ngModel)]="fields.category">
+        <datalist id="categories">
+          @for (category of categories; track category) { <option [value]="category"></option> }
+        </datalist>
+      </div>
+      <div class="form-field full">
+        <label for="p-name">Nome do produto <span>*</span></label>
+        <input id="p-name" name="name" required maxlength="120" placeholder="Ex.: Café especial 250 g" [(ngModel)]="fields.name">
+      </div>
+      <div class="form-field">
+        <label for="p-price">Preço de venda (R$) <span>*</span></label>
+        <input id="p-price" name="price" inputmode="decimal" required maxlength="12" placeholder="0,00" [(ngModel)]="fields.price">
+        <small>Use até duas casas decimais. Máximo R$ 1.000.000.</small>
+      </div>
+      <div class="form-field">
+        <label for="p-stock">Quantidade em estoque <span>*</span></label>
+        <input type="number" id="p-stock" name="stock" required min="0" max="1000000" step="1" [(ngModel)]="fields.stock">
+      </div>
+      <div class="form-field">
+        <span>Situação</span>
+        <label class="checkbox-field"><input type="checkbox" name="active" [(ngModel)]="fields.active">Produto ativo para venda</label>
+      </div>
+    </div>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="button" [disabled]="workspace.busy()" (click)="workspace.modal.set(null)">Voltar</button>
+    <button type="submit" class="button primary" [disabled]="workspace.busy()">
+      <app-icon name="check" [size]="15" />{{ product() ? 'Salvar alterações' : 'Cadastrar produto' }}
+    </button>
+  </div>
+</form>

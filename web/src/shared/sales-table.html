@@ -1,0 +1,33 @@
+@if (sales().length) {
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr><th>Venda</th><th>Cliente</th><th>Data e hora</th><th>Pagamento</th>
+          <th class="right">Total</th><th>Situação</th><th aria-label="Ações"></th></tr>
+      </thead>
+      <tbody>
+        @for (sale of sales(); track sale.id) {
+          <tr>
+            <td><span class="sale-id">{{ sale.id | saleId }}</span></td>
+            <td><strong>{{ sale.customer || 'Cliente balcão' }}</strong></td>
+            <td>{{ sale.created_at | belemTime }}</td>
+            <td>{{ paymentNames[sale.payment_method] }}</td>
+            <td class="right"><strong>{{ sale.total_cents | brl }}</strong></td>
+            <td><span class="badge" [class.cancelled]="sale.status === 'cancelled'">
+              {{ sale.status === 'cancelled' ? 'Cancelada' : 'Concluída' }}
+            </span></td>
+            <td class="right">
+              <button class="icon-button" (click)="workspace.openReceipt(sale.id)"
+                [attr.aria-label]="'Ver venda #' + sale.id" [title]="'Ver venda #' + sale.id">
+                <app-icon name="eye" [size]="16" />
+              </button>
+            </td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+} @else {
+  <app-empty-state heading="Nenhuma venda encontrada"
+    description="Registre uma venda ou ajuste os filtros." />
+}

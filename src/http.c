@@ -14,6 +14,8 @@
 #include <unistd.h>
 
 #define HEADER_LIMIT 8192
+#define PATH_LIMIT 512
+#define QUERY_LIMIT 2048
 static volatile sig_atomic_t running = 1;
 static void stop_server(int signum) { (void)signum; running = 0; }
 void http_stop(void) { running = 0; }
@@ -40,33 +42,43 @@ static void send_response(int fd, int status, const char *type, const char *body
     if (count > 0 && (size_t)count < sizeof(header) && send_all(fd, header, (size_t)count)) send_all(fd, body, length);
 }
 
-static void send_error(int fd, int status, const char *message) {
-    Response result = error_response(status, message);
-    const char *body = result.body ? result.body : "{\"error\":\"Memória insuficiente.\"}";
-    send_response(fd, result.status, "application/json; charset=utf-8", body, strlen(body));
-    free(result.body);
+static void send_json(int fd, Response response) {
+    const char *body = response.body ? response.body : "{\"error\":\"Memória insuficiente.\"}";
+    send_response(fd, response.status, "application/json; charset=utf-8", body, strlen(body));
+    free(response.body);
 }
 
-static int local_origin(const char *value, int port) {
-    char a[64], b[64];
-    snprintf(a, sizeof(a), "http://127.0.0.1:%d", port);
-    snprintf(b, sizeof(b), "http://localhost:%d", port);
-    return !strcmp(value, a) || !strcmp(value, b);
+static void send_error(int fd, int status, const char *message) {
+    send_json(fd, error_response(status, message));
+}
+
+static int local_host(const char *value, int port) {
+    char ipv4[32], localhost[32];
+    snprintf(ipv4, sizeof(ipv4), "127.0.0.1:%d", port);
+    snprintf(localhost, sizeof(localhost), "localhost:%d", port);
+    return !strcmp(value, ipv4) || !strcmp(value, localhost);
+}
+
+static const char *static_type(const char *name) {
+    if (!strcmp(name, "index.html")) return "text/html; charset=utf-8";
+    if (!strcmp(name, "favicon.svg")) return "image/svg+xml";
+    /* Os bundles do Angular são arquivos planos com nomes gerados no build. */
+    size_t stem = strspn(name, "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_");
+    if (stem && !strcmp(name + stem, ".js")) return "text/javascript; charset=utf-8";
+    if (stem && !strcmp(name + stem, ".css")) return "text/css; charset=utf-8";
+    return NULL;
 }
 
 static void static_file(App *app, int fd, const Request *req) {
-    const char *name = NULL, *type = NULL;
-    if (!strcmp(req->path, "/") || !strcmp(req->path, "/index.html")) { name = "index.html"; type = "text/html; charset=utf-8"; }
-    else if (!strcmp(req->path, "/app.js")) { name = "app.js"; type = "text/javascript; charset=utf-8"; }
-    else if (!strcmp(req->path, "/style.css")) { name = "style.css"; type = "text/css; charset=utf-8"; }
-    else if (!strcmp(req->path, "/favicon.svg")) { name = "favicon.svg"; type = "image/svg+xml"; }
-    if (!name) { send_error(fd, 404, "Página não encontrada."); return; }
+    const char *name = req->path[1] ? req->path + 1 : "index.html";
+    const char *type = static_type(name);
+    if (!type) { send_error(fd, 404, "Página não encontrada."); return; }
     if (strcmp(req->method, "GET")) { send_error(fd, 405, "Método não permitido."); return; }
     char path[PATH_MAX];
     int n = snprintf(path, sizeof(path), "%s/%s", app->web_root, name);
     if (n < 0 || (size_t)n >= sizeof(path)) { send_error(fd, 500, "Caminho da interface inválido."); return; }
     FILE *file = fopen(path, "rb");
-    if (!file) { send_error(fd, 404, "Arquivo da interface não encontrado. Execute a partir da pasta do projeto."); return; }
+    if (!file) { send_error(fd, 404, "Arquivo da interface não encontrado. Execute make na pasta do projeto."); return; }
     if (fseek(file, 0, SEEK_END) != 0) { fclose(file); send_error(fd, 500, "Falha ao ler arquivo."); return; }
     long size = ftell(file);
     if (size < 0 || size > 2097152 || fseek(file, 0, SEEK_SET) != 0) { fclose(file); send_error(fd, 500, "Arquivo inválido."); return; }
@@ -80,7 +92,7 @@ static void static_file(App *app, int fd, const Request *req) {
 }
 
 static void handle_client(App *app, int fd, int port) {
-    char *buffer = calloc(HEADER_LIMIT + MAX_BODY + 1, 1);
+    char *buffer = malloc(HEADER_LIMIT + MAX_BODY + 1);
     if (!buffer) { send_error(fd, 500, "Memória insuficiente."); return; }
     size_t used = 0;
     char *header_end = NULL;
@@ -93,28 +105,26 @@ static void handle_client(App *app, int fd, int port) {
         header_end = strstr(buffer, "\r\n\r\n");
     }
     size_t header_length = (size_t)(header_end + 4 - buffer);
-    Request req = {0};
+    Request req;
     char target[2560], version[16], extra;
     char *line_end = strstr(buffer, "\r\n");
-    if (!line_end) { send_error(fd, 400, "Requisição inválida."); goto done; }
     *line_end = '\0';
     if (sscanf(buffer, "%7s %2559s %15s %c", req.method, target, version, &extra) != 3 ||
         (strcmp(version, "HTTP/1.1") && strcmp(version, "HTTP/1.0")) || target[0] != '/') {
         send_error(fd, 400, "Requisição HTTP inválida."); goto done;
     }
     char *question = strchr(target, '?');
-    if (question) {
-        *question++ = '\0';
-        if (strlen(question) >= sizeof(req.query)) { send_error(fd, 414, "Endereço muito longo."); goto done; }
-        strcpy(req.query, question);
+    if (question) *question++ = '\0';
+    req.path = target;
+    req.query = question ? question : "";
+    if (strlen(req.path) >= PATH_LIMIT || strlen(req.query) >= QUERY_LIMIT) {
+        send_error(fd, 414, "Endereço muito longo.");
+        goto done;
     }
-    if (strlen(target) >= sizeof(req.path)) { send_error(fd, 414, "Endereço muito longo."); goto done; }
-    strcpy(req.path, target);
     size_t body_length = 0;
     int has_length = 0, content_json = 0, has_host = 0;
     for (char *line = line_end + 2; line < header_end; ) {
         char *end = strstr(line, "\r\n");
-        if (!end) { send_error(fd, 400, "Cabeçalho inválido."); goto done; }
         *end = '\0';
         char *colon = strchr(line, ':');
         if (!colon) { send_error(fd, 400, "Cabeçalho inválido."); goto done; }
@@ -134,12 +144,10 @@ static void handle_client(App *app, int fd, int port) {
             send_error(fd, 400, "Transferência fragmentada não suportada."); goto done;
         } else if (!strcasecmp(line, "Content-Type")) {
             content_json = !strcasecmp(colon, "application/json") || !strncasecmp(colon, "application/json;", 17);
-        } else if (!strcasecmp(line, "Origin") && !local_origin(colon, port)) {
+        } else if (!strcasecmp(line, "Origin") && (strncmp(colon, "http://", 7) || !local_host(colon + 7, port))) {
             send_error(fd, 403, "Origem não autorizada."); goto done;
         } else if (!strcasecmp(line, "Host")) {
-            char host[80];
-            int host_length = snprintf(host, sizeof(host), "http://%s", colon);
-            if (has_host || host_length < 0 || (size_t)host_length >= sizeof(host) || !local_origin(host, port)) {
+            if (has_host || !local_host(colon, port)) {
                 send_error(fd, 403, "Host não autorizado. Use localhost ou 127.0.0.1."); goto done;
             }
             has_host = 1;
@@ -159,10 +167,7 @@ static void handle_client(App *app, int fd, int port) {
     req.body = buffer + header_length;
     if (!strncmp(req.path, "/api/", 5)) {
         if (body_length && !content_json) { send_error(fd, 415, "Utilize Content-Type application/json."); goto done; }
-        Response response = api_route(app, &req);
-        const char *body = response.body ? response.body : "{\"error\":\"Memória insuficiente.\"}";
-        send_response(fd, response.status, "application/json; charset=utf-8", body, strlen(body));
-        free(response.body);
+        send_json(fd, api_route(app, &req));
     } else static_file(app, fd, &req);
 done:
     free(buffer);

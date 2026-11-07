@@ -1,0 +1,17 @@
+<div class="page-heading">
+  <div><h1>Relatórios</h1><p>Total de vendas concluídas por período.</p></div>
+</div>
+<div class="section-toolbar">
+  <app-date-filter prefix="report" [dates]="workspace.reportDates()" (applyDates)="workspace.reportDates.set($event)" />
+</div>
+@if (report().data; as report) {
+  <section class="panel report-summary" aria-labelledby="report-period">
+    <h2 id="report-period">{{ report.from | brDate }} a {{ report.to | brDate }}</h2>
+    <dl>
+      <div><dt>Vendas concluídas</dt><dd>{{ report.summary.sale_count | brNumber }}</dd></div>
+      <div><dt>Total vendido</dt><dd id="report-total">{{ report.summary.total_cents | brl }}</dd></div>
+    </dl>
+  </section>
+} @else {
+  <app-load-status [error]="report().error" />
+}

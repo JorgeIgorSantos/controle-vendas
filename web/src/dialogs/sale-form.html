@@ -1,0 +1,70 @@
+<form id="sale-form" ngNativeValidate (ngSubmit)="save()">
+  <div class="sale-layout">
+    <section class="sale-catalog">
+      <div class="search-box">
+        <app-icon name="search" [size]="16" />
+        <input type="search" id="catalog-search" name="catalog" placeholder="Buscar produto ou código…"
+          aria-label="Buscar produtos para a venda" [(ngModel)]="search">
+      </div>
+      <div class="sale-product-list" id="sale-product-list">
+        @for (product of catalog(); track product.id) {
+          <button type="button" class="catalog-product" [disabled]="!product.stock || workspace.busy()"
+            [attr.aria-label]="'Adicionar ' + product.name" (click)="changeQuantity(product, 1)">
+            <span class="catalog-info"><strong>{{ product.name }}</strong>
+              <small>{{ product.sku }} · {{ product.stock ? (product.stock | brNumber) + ' un. disponíveis' : 'Sem estoque' }}</small></span>
+            <b>{{ product.price_cents | brl }}</b><span class="catalog-plus">+</span>
+          </button>
+        } @empty {
+          <app-empty-state heading="Nenhum produto disponível"
+            description="Cadastre um produto ativo ou ajuste a busca." [compact]="true" />
+        }
+      </div>
+    </section>
+    <section class="sale-cart">
+      <div class="cart-title"><h3>Itens da venda</h3><span class="count-tag" id="cart-count">{{ count() }} itens</span></div>
+      @if (error()) { <div class="form-error visible" role="alert">{{ error() }}</div> }
+      <div class="cart-items" id="cart-items">
+        @for (item of cart(); track item.product.id) {
+          <div class="cart-line">
+            <div class="cart-line-info"><strong>{{ item.product.name }}</strong><small>{{ item.product.price_cents | brl }} / un.</small></div>
+            <div class="quantity-controls">
+              <button type="button" [attr.aria-label]="'Diminuir ' + item.product.name" [disabled]="workspace.busy()"
+                (click)="changeQuantity(item.product, -1)">−</button>
+              <input #quantity type="number" min="1" [max]="item.product.stock" step="1" [value]="item.quantity"
+                [attr.aria-label]="'Quantidade de ' + item.product.name" [disabled]="workspace.busy()"
+                (change)="editQuantity(item, quantity)">
+              <button type="button" [attr.aria-label]="'Aumentar ' + item.product.name" [disabled]="workspace.busy()"
+                (click)="changeQuantity(item.product, 1)">+</button>
+            </div>
+            <b>{{ item.quantity * item.product.price_cents | brl }}</b>
+            <button type="button" class="icon-button danger" [attr.aria-label]="'Remover ' + item.product.name"
+              [disabled]="workspace.busy()" (click)="setQuantity(item.product, 0)"><app-icon name="close" [size]="14" /></button>
+          </div>
+        } @empty {
+          <div class="cart-empty">Nenhum item adicionado.</div>
+        }
+      </div>
+      <div class="form-grid">
+        <div class="form-field full"><label for="s-customer">Cliente</label>
+          <input name="customer" id="s-customer" maxlength="120" placeholder="Cliente balcão (opcional)" [(ngModel)]="form.customer"></div>
+        <div class="form-field"><label for="s-payment">Forma de pagamento <span>*</span></label>
+          <select id="s-payment" name="payment_method" required [(ngModel)]="form.payment_method">
+            @for (option of paymentOptions; track option[0]) { <option [value]="option[0]">{{ option[1] }}</option> }
+          </select>
+        </div>
+      </div>
+      <div class="sale-totals">
+        <div class="grand-total"><span>Total da venda</span><strong id="cart-total">{{ total() | brl }}</strong></div>
+      </div>
+    </section>
+  </div>
+  <div class="modal-footer">
+    <small>O estoque será atualizado ao concluir a venda.</small>
+    <div>
+      <button type="button" class="button" [disabled]="workspace.busy()" (click)="closeRequested.emit()">Voltar</button>
+      <button type="submit" class="button primary" id="finish-sale" [disabled]="!cart().length || workspace.busy()">
+        <app-icon name="check" [size]="15" />Finalizar venda
+      </button>
+    </div>
+  </div>
+</form>

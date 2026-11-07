@@ -5,6 +5,8 @@ artifacts/*.zip
 tests/.runtime/
 .tools/
 node_modules/
+/web/.angular/
+/web/dist/
 __pycache__/
 
 # Arquivos locais de compilação, revisão e bancos de trabalho

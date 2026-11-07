@@ -13,7 +13,7 @@ Gabriel Henrique Maciel Leite | Matrícula: 202403628988
 Jorge Igor Dos Santos Pinto | Matrícula: 202309399989
 
 PREPARAÇÃO
-Executar ./iniciar.sh --demo em um banco vazio, ou usar --db data/exemplo.db --port 8081.
+Executar sh iniciar.sh --db data/aula.db com um banco vazio para a demonstração.
 Abrir o navegador no endereço indicado; deixar src/api.c e include/app.h disponíveis.
 Conferir que o SKU DEMO-AULA ainda não existe; usar outro código único se necessário.
 
@@ -35,7 +35,7 @@ Abrir include/app.h e localizar Product. Demonstrar os controles de edição e e
 
 SLIDE 05 — O total é calculado em C. O estoque acompanha. 
 Apresenta: Lucas Robert Lopes Silva. Tempo: 1 min 30 s.
-Explicar que o frontend mostra uma prévia e o backend define os valores definitivos. Usar 2 × 24,90 + 39,90 − 9,70 = 80,00.
+Explicar que o frontend mostra uma prévia e o backend define os valores definitivos. Usar 2 × 24,90 + 39,90 = 89,70.
 
 SLIDE 06 — Memória alocada para cada venda. 
 Apresenta: Lucas Robert Lopes Silva. Tempo: 1 min 30 s.
@@ -43,19 +43,19 @@ Mostrar create_sale em src/api.c. Explicar sizeof, o ponteiro, a verificação d
 
 SLIDE 07 — Fechar o programa não apaga a loja. 
 Apresenta: Alan Freitas Miranda. Tempo: 2 min.
-Executar Ctrl+C, reiniciar ./iniciar.sh e recarregar o navegador. Comparar uma venda antes/depois. Não apagar o banco nem usar reset.
+Executar Ctrl+C, reiniciar com o mesmo argumento --db e recarregar o navegador. Comparar uma venda antes/depois. Não apagar o banco nem usar reset.
 
 SLIDE 08 — Resultados executados, com evidências. 
 Apresenta: Gabriel Henrique Maciel Leite. Tempo: 1 min.
-Abrir os JSON e explicar o escopo. As bibliotecas incorporadas não foram instrumentadas pelos sanitizers.
+Abrir os resultados em artifacts/qa/ e explicar o escopo. As bibliotecas incorporadas não foram instrumentadas pelos sanitizers.
 
 SLIDE 09 — Uma venda, do início ao relatório. 
 Apresenta: Gabriel Henrique Maciel Leite. Tempo: 2 min.
-Usar SKU DEMO-AULA, preço 10,00, estoque 5 e vender duas unidades com desconto de 1,00. Total esperado 19,00. Todos os dados de demonstração são fictícios.
+Usar SKU DEMO-AULA, preço 10,00, estoque 5 e vender duas unidades. Conferir o total de R$ 20,00 e o saldo de 3 unidades. Todos os dados de demonstração são fictícios.
 
 SLIDE 10 — O movimento da loja, em números claros. 
 Apresenta: Jorge Igor Dos Santos Pinto. Tempo: 1 min 30 s.
-Comparar o relatório com uma venda e explicar a diferença entre receita bruta dos produtos e total após descontos.
+Selecionar o período da venda e conferir a quantidade de vendas concluídas e o total vendido.
 
 SLIDE 11 — O essencial entregue. Os próximos passos, claros. 
 Apresenta: Jorge Igor Dos Santos Pinto. Tempo: 1 min.
@@ -70,9 +70,9 @@ RESPOSTAS QUE TODOS DEVEM DOMINAR
 2. BEGIN IMMEDIATE, COMMIT e ROLLBACK unem a gravação da venda à baixa de todos os itens.
 3. create_sale aloca o vetor SaleItem com calloc, verifica o retorno e libera em sucesso/falha.
 4. SQLite recupera o mesmo arquivo em cada execução; os testes encerram e reabrem um processo real.
-5. Cancelar não apaga: preserva histórico e devolve estoque uma única vez.
-6. O backend em C recalcula o valor; a prévia JavaScript não define o preço definitivo.
-7. Gráficos do relatório usam horário de Belém; o banco guarda timestamps em UTC.
+5. O servidor recusa vendas que ultrapassam o saldo disponível.
+6. O backend em C recalcula o valor; o Angular apresenta a prévia.
+7. O período do relatório usa o horário de Belém; o banco guarda timestamps em UTC.
 8. Escopo atual: local, sem emissão fiscal e sem autenticação remota.
 
 DISTRIBUIÇÃO DOS 15 MINUTOS
