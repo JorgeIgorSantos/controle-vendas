@@ -129,16 +129,15 @@ outro executável Chromium.
 ESTRUTURA
 ---------
 src/main.c          argumentos e inicialização da aplicação
-src/http.c          servidor HTTP e entrega da interface
-src/api.c           roteamento das requisições da API
-src/products.c      cadastro, consulta, edição e exclusão de produtos
-src/sales.c         registro e consulta de vendas, cálculo e baixa de estoque
-src/reports.c       resumo de vendas por período
-src/api_helpers.c   conversão de consultas para JSON e filtros compartilhados
-src/database.c      abertura do SQLite e criação do esquema
-src/utils.c         validações, leitura de parâmetros e respostas JSON
-include/app.h       structs, constantes e contratos da infraestrutura
-include/            cabeçalhos de produtos, vendas, relatórios e auxiliares da API
+src/models/         abertura do SQLite, esquema e consultas compartilhadas
+src/server/         servidor HTTP, roteamento, validações e respostas JSON
+src/views/produtos/ listagem, busca, cadastro/edição e exclusão de produtos
+src/views/vendas/   listagem, busca e registro de vendas com baixa de estoque
+src/views/sistema/  saúde do servidor, encerramento e relatórios por período
+include/app.h       cabeçalho principal e versão da aplicação
+include/models.h    structs, limites e contratos de acesso ao banco
+include/http.h      requisições, respostas, servidor e utilitários
+include/views.h     contratos dos handlers da API
 vendor/             SQLite e cJSON com fontes originais
 web/src/            rotas, componentes, formulários e serviço HTTP em Angular
 data/               arquivo SQLite de trabalho e exemplo.db
@@ -156,10 +155,10 @@ web/dist/browser. O servidor C entrega esses arquivos e a API no mesmo endereço
 DOCUMENTAÇÃO E ENTREGA
 ---------------------
 docs/relatorio-tecnico.pdf          Relatório técnico da aplicação atual
-docs/apresentacao.html              Apresentação atual, com navegação e notas
-docs/apresentacao.pdf               Mesmos 11 slides em PDF
+docs/apresentacao.html              Versão anterior, com navegação e notas
+docs/apresentacao.pdf               Apresentação principal em PDF, com 8 slides
 docs/apresentacao.pptx              Arquivo PowerPoint da versão anterior
-docs/roteiro-apresentacao.txt       Roteiro da apresentação atual
+docs/roteiro-apresentacao.txt       Roteiro da versão HTML
 docs/requisitos.md                  Correspondência com cada item do PDF
 docs/equipe.json                    Identificação, nomes completos e matrículas
 
@@ -172,11 +171,11 @@ O apêndice oferece divisão sugerida, sem inventar contribuições já realizad
 
 Abra docs/apresentacao.html diretamente no navegador, sem iniciar o servidor.
 Use as setas para navegar, F para tela cheia e N para as notas do apresentador.
-As imagens e as fontes estão incorporadas ao HTML. Para atualizar o PDF e o
-roteiro após editar o HTML, use Chrome e as ferramentas de navegador já
+As imagens e as fontes estão incorporadas ao HTML. Para exportar essa versão
+sem substituir o PDF principal enviado, use Chrome e as ferramentas de navegador já
 utilizadas pelos testes (python3 scripts/setup-tools.py):
 
-  node scripts/export_presentation.cjs
+  node scripts/export_presentation.cjs docs/apresentacao.html tmp/apresentacao-html.pdf
 
 Para atualizar somente o relatório técnico, execute antes os testes da API,
 de memória e de interface para gerar as evidências atuais em artifacts/qa/:
