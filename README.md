@@ -14,6 +14,14 @@ Acesse [http://localhost:8080](http://localhost:8080).
 
 Para parar: `docker compose stop`. Os dados ficam em um volume persistente.
 
+## Hospedagem gratuita no Render
+
+O arquivo `render.yaml` configura um serviço Docker no plano **Free**, com saúde em `/api/health`. No Render, crie um Web Service a partir deste repositório e selecione Docker e Free. A aplicação reconhece automaticamente `PORT` e `RENDER_EXTERNAL_HOSTNAME`.
+
+Essa hospedagem serve para demonstração: o Render suspende o serviço após 15 minutos sem acesso, e os dados do SQLite são perdidos ao suspender, reiniciar ou atualizar o serviço. A primeira visita após a suspensão pode demorar cerca de um minuto. [Limites oficiais do plano gratuito](https://render.com/docs/free).
+
+O site permite cadastrar e alterar os dados de demonstração. O encerramento remoto fica desativado na hospedagem. Para outro domínio HTTPS, configure `VENDA_PUBLIC_HOST` com o domínio sem protocolo, porta ou caminho.
+
 ## Executar sem Docker
 
 No Linux ou WSL, use GCC, Make e Node.js 24 LTS (24.15 ou superior) com npm.

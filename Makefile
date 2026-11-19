@@ -30,9 +30,11 @@ run: all
 	./$(BUILD_DIR)/vendas
 test: all
 	python3 tests/test_api.py
+	python3 tests/test_deploy.py
 sanitize:
 	$(MAKE) BUILD_DIR=build/sanitized CFLAGS='-std=c11 -g -O1 -Wall -Wextra -Wpedantic -Werror -fsanitize=address,undefined -fno-omit-frame-pointer'
 	ASAN_OPTIONS=detect_leaks=1 VENDA_BINARY=build/sanitized/vendas python3 tests/test_api.py
+	ASAN_OPTIONS=detect_leaks=1 VENDA_BINARY=build/sanitized/vendas python3 tests/test_deploy.py
 package:
 	python3 scripts/package.py
 clean:

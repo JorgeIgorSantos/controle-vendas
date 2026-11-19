@@ -1,0 +1,12 @@
+services:
+  - type: web
+    name: controle-vendas
+    runtime: docker
+    plan: free
+    region: virginia
+    branch: main
+    dockerfilePath: ./Dockerfile
+    healthCheckPath: /api/health
+    envVars:
+      - key: PORT
+        value: "10000"
