@@ -90,6 +90,36 @@ class DeploymentTests(unittest.TestCase):
         report = json.loads(self.request('GET', '/api/reports')[1])
         self.assertEqual(report['summary'], {'sale_count': 1, 'total_cents': 4980})
 
+    def test_shared_link_navigation(self):
+        """Links compartilhados abrem a página mesmo com Sec-Fetch-Site: cross-site."""
+        headers = {'Sec-Fetch-Site': 'cross-site', 'Sec-Fetch-Mode': 'navigate', 'Sec-Fetch-Dest': 'document'}
+        for path in ('/', '/index.html', '/?origem=compartilhamento'):
+            for metadata in (headers, dict(reversed(list(headers.items())))):
+                with self.subTest(path=path, metadata=metadata):
+                    status, body, content_type = self.request('GET', path, headers=metadata)
+                    self.assertEqual(status, 200, body)
+                    self.assertIn('text/html', content_type)
+                    self.assertIn(b'<app-root>', body)
+        self.assertEqual(self.request('GET', '/', host='outro.example', headers=headers)[0], 403)
+        self.assertEqual(self.request('GET', '/', origin='https://outro.example', headers=headers)[0], 403)
+
+    def test_cross_site_api_and_embeds_stay_blocked(self):
+        """A exceção de navegação não libera a API, escritas ou páginas embutidas."""
+        for method, path, mode, destination in (
+            ('GET', '/api/products', 'navigate', 'document'),
+            ('POST', '/api/products', 'navigate', 'document'),
+            ('GET', '/', 'navigate', 'iframe'),
+            ('GET', '/', 'navigate', 'object'),
+            ('GET', '/', 'cors', 'document'),
+            ('GET', '/', 'no-cors', 'image'),
+            ('GET', '/', 'navigate', ''),
+            ('GET', '/favicon.svg', 'no-cors', 'image'),
+        ):
+            with self.subTest(method=method, path=path, mode=mode, destination=destination):
+                headers = {'Sec-Fetch-Site': 'cross-site', 'Sec-Fetch-Mode': mode, 'Sec-Fetch-Dest': destination}
+                self.assertEqual(self.request(method, path, headers=headers)[0], 403)
+        self.assertEqual(json.loads(self.request('GET', '/api/products')[1]), [])
+
     def test_other_hosts_and_origins_are_rejected(self):
         """Outros hosts, origens e cabeçalhos encaminhados não liberam acesso."""
         for host in ('outro.example', PUBLIC_HOST + '.outro.example', PUBLIC_HOST + ':10000'):

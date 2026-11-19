@@ -36,7 +36,8 @@ static void send_response(int fd, int status, const char *type, const char *body
     char header[1400];
     int count = snprintf(header, sizeof(header),
         "HTTP/1.1 %d %s\r\nContent-Type: %s\r\nContent-Length: %zu\r\nConnection: close\r\n"
-        "Cache-Control: no-store\r\nX-Content-Type-Options: nosniff\r\nReferrer-Policy: no-referrer\r\n"
+        "Cache-Control: no-store\r\nVary: Sec-Fetch-Site, Sec-Fetch-Mode, Sec-Fetch-Dest\r\n"
+        "X-Content-Type-Options: nosniff\r\nReferrer-Policy: no-referrer\r\n"
         "Content-Security-Policy: default-src 'self'; script-src 'self'; style-src 'self'; "
         "img-src 'self' data:; font-src 'self'; connect-src 'self'; frame-ancestors 'none'; base-uri 'none'; form-action 'self'\r\n\r\n",
         status, reason, type, length);
@@ -136,6 +137,7 @@ static void handle_client(App *app, int fd, int port) {
     }
     size_t body_length = 0;
     int has_length = 0, content_json = 0, has_host = 0;
+    int cross_site = 0, navigation = 0, document = 0;
     for (char *line = line_end + 2; line < header_end; ) {
         char *end = strstr(line, "\r\n");
         *end = '\0';
@@ -164,12 +166,21 @@ static void handle_client(App *app, int fd, int port) {
                 send_error(fd, 403, "Host não autorizado."); goto done;
             }
             has_host = 1;
-        } else if (!strcasecmp(line, "Sec-Fetch-Site") && !strcasecmp(colon, "cross-site")) {
-            send_error(fd, 403, "Acesso entre sites não permitido."); goto done;
+        } else if (!strcasecmp(line, "Sec-Fetch-Site")) {
+            cross_site |= !strcasecmp(colon, "cross-site");
+        } else if (!strcasecmp(line, "Sec-Fetch-Mode")) {
+            navigation = !strcasecmp(colon, "navigate");
+        } else if (!strcasecmp(line, "Sec-Fetch-Dest")) {
+            document = !strcasecmp(colon, "document");
         }
         line = end + 2;
     }
     if (!has_host) { send_error(fd, 400, "Cabeçalho Host obrigatório."); goto done; }
+    int entry_page = !strcmp(req.method, "GET") &&
+        (!strcmp(req.path, "/") || !strcmp(req.path, "/index.html"));
+    if (cross_site && !(entry_page && navigation && document)) {
+        send_error(fd, 403, "Acesso entre sites não permitido."); goto done;
+    }
     while (used < header_length + body_length) {
         ssize_t count = recv(fd, buffer + used, header_length + body_length - used, 0);
         if (count <= 0) { send_error(fd, 400, "Corpo incompleto."); goto done; }
