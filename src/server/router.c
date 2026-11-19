@@ -22,7 +22,10 @@ Response api_route(App *app, const Request *req) {
     int sales = !strcmp(req->path, "/api/sales");
     int reports = !strcmp(req->path, "/api/reports");
     int health = !strcmp(req->path, "/api/health");
-    if (post && !strcmp(req->path, "/api/shutdown")) return shutdown_server();
+    if (post && !strcmp(req->path, "/api/shutdown")) {
+        if (app->public_host) return error_response(403, "O encerramento remoto está desativado na hospedagem.");
+        return shutdown_server();
+    }
     if (get && health) return get_health();
     if (get && reports) return get_report(app, req);
     if (get && products) return get_products(app, req);
