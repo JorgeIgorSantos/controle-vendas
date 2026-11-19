@@ -1,33 +1,6 @@
-#include "sales.h"
-#include "api_helpers.h"
+#include "views.h"
 #include <stdlib.h>
 #include <string.h>
-
-Response get_sales(App *app, const Request *req) {
-    char from[11], to[11], search[121];
-    if (!date_filters(req, from, to) || query_param(req->query, "search", search, sizeof(search)) < 0)
-        return error_response(400, "Informe um período válido, com a data inicial anterior ou igual à final.");
-    cJSON *rows = read_range(app,
-        "SELECT s.*, (SELECT sum(quantity) FROM sale_items WHERE sale_id=s.id) AS item_count "
-        "FROM sales s WHERE date(s.created_at,'-3 hours') BETWEEN ?1 AND ?2 "
-        "AND (?3='' OR instr(lower(s.customer),lower(?3))>0 OR CAST(s.id AS TEXT)=?3) "
-        "ORDER BY s.created_at DESC,s.id DESC", from, to, search);
-    return rows ? json_response(200, rows) : db_error();
-}
-
-Response get_sale(App *app, int64_t id) {
-    cJSON *rows = read_rows_by_id(app, "SELECT * FROM sales WHERE id=?", id);
-    if (!rows) return db_error();
-    cJSON *sale = take_first_row(rows);
-    if (!sale) return error_response(404, "Venda não encontrada.");
-    cJSON *items = read_rows_by_id(app, "SELECT * FROM sale_items WHERE sale_id=? ORDER BY id", id);
-    if (!items || !cJSON_AddItemToObject(sale, "items", items)) {
-        cJSON_Delete(items);
-        cJSON_Delete(sale);
-        return db_error();
-    }
-    return json_response(200, sale);
-}
 
 static int payment_valid(const char *value) {
     return !strcmp(value, "pix") || !strcmp(value, "dinheiro") || !strcmp(value, "credito") || !strcmp(value, "debito");

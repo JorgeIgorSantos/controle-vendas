@@ -1,7 +1,5 @@
-#include "api_helpers.h"
+#include "models.h"
 #include <string.h>
-
-Response db_error(void) { return error_response(500, "Não foi possível concluir a operação no banco de dados."); }
 
 /* Consome e finaliza o statement depois de converter o resultado. */
 cJSON *read_rows(sqlite3_stmt *stmt) {
@@ -48,15 +46,6 @@ cJSON *take_first_row(cJSON *rows) {
     cJSON *row = cJSON_DetachItemFromArray(rows, 0);
     cJSON_Delete(rows);
     return row;
-}
-
-int date_filters(const Request *req, char *from, char *to) {
-    int a = query_param(req->query, "from", from, 11);
-    int b = query_param(req->query, "to", to, 11);
-    if (a < 0 || b < 0 || (a && !valid_date(from)) || (b && !valid_date(to))) return 0;
-    if (!a) strcpy(from, "1900-01-01");
-    if (!b) strcpy(to, "9999-12-31");
-    return strcmp(from, to) <= 0;
 }
 
 cJSON *read_range(App *app, const char *sql, const char *from, const char *to, const char *search) {

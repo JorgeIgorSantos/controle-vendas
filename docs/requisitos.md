@@ -5,15 +5,15 @@ Fonte: `Projeto_Pratico_C_4_Pontos.pdf`, 4 páginas, lidas integralmente. A apli
 | Requisito obrigatório | Implementação | Evidência |
 |---|---|---|
 | 1. Menu organizado, retorno e encerramento | Navegação Produtos/Vendas/Relatórios, botões Voltar e Ctrl+C ou docker compose stop | `web/src/app.html`, teste de encerramento e testes UI |
-| 2. Struct com cinco campos e identificador | `Product` contém ID, SKU, nome, categoria, preço, estoque e situação; `Sale` e `SaleItem` | `include/app.h` |
-| 3. Cadastrar, listar, pesquisar, atualizar e excluir | CRUD completo de produtos; SKU único e ID automático | `src/products.c`; testes API 02 e 03; testes UI de CRUD |
+| 2. Struct com cinco campos e identificador | `Product` contém ID, SKU, nome, categoria, preço, estoque e situação; `Sale` e `SaleItem` | `include/models.h` |
+| 3. Cadastrar, listar, pesquisar, atualizar e excluir | CRUD completo de produtos; SKU único e ID automático | `src/views/produtos/`; testes API 02 e 03; testes UI de CRUD |
 | 4. Pelo menos duas regras específicas | Cálculo da venda em centavos e baixa de estoque com validação de saldo | testes API 05, 06, 07 e 13 |
-| 5. Condicionais e laços | validações `if`, menus via rotas, processamento de itens com `for`, servidor com `while` | `src/products.c`, `src/sales.c`, `src/http.c` |
-| 6. Funções com responsabilidades definidas | servidor, persistência, regras, conversões e inicialização separados | `src/*.c` |
-| 7. Ponteiros e memória dinâmica | `SaleItem *items` com `calloc`; buffers com `malloc`; verificações e `free` em sucesso/falha | `src/sales.c`, `src/http.c`; `make sanitize` |
+| 5. Condicionais e laços | validações `if`, menus via rotas, processamento de itens com `for`, servidor com `while` | `src/views/produtos/`, `src/views/vendas/criar_venda.c`, `src/server/http.c` |
+| 6. Funções com responsabilidades definidas | servidor, persistência, regras, conversões e inicialização separados | `src/main.c`, `src/models/`, `src/server/`, `src/views/` |
+| 7. Ponteiros e memória dinâmica | `SaleItem *items` com `calloc`; buffers com `malloc`; verificações e `free` em sucesso/falha | `src/views/vendas/criar_venda.c`, `src/server/http.c`; `make sanitize` |
 | 8. Salvar e recuperar arquivos | SQLite em `data/vendas.db` com transações, WAL e integridade referencial | teste API 11, reinício real e `PRAGMA integrity_check` |
 | 9. Validar entradas e IDs repetidos | campos obrigatórios, limites, tipos, SKU duplicado, datas, quantidades, pagamento e estoque | testes API 03, 04, 07, 09, 10 e 12; captura 05 |
-| 10. Separação `.c` / `.h` e comentários | nove módulos C, cabeçalhos por funcionalidade e estruturas compartilhadas, comentários de decisões relevantes | `src/`, `include/` |
+| 10. Separação `.c` / `.h` e comentários | fontes organizados em models, server e views, cabeçalhos por responsabilidade e comentários de decisões relevantes | `src/`, `include/` |
 | Interface gráfica indispensável | Interface Angular responsiva com formulários, tabelas e modais | 9 testes UI; capturas desktop e celular |
 
 ## Planejamento

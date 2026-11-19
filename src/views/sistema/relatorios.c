@@ -1,5 +1,4 @@
-#include "reports.h"
-#include "api_helpers.h"
+#include "views.h"
 
 Response get_report(App *app, const Request *req) {
     char from[11], to[11];
