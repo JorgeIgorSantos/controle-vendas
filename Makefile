@@ -4,7 +4,9 @@ CFLAGS ?= -std=c11 -O2 -Wall -Wextra -Wpedantic -Werror
 LDLIBS = -lm -lpthread -ldl
 BUILD_DIR ?= build
 WEB_FILES = $(if $(wildcard web/src),$(shell find web/src)) web/angular.json web/tsconfig.json web/package.json web/package-lock.json
-SOURCES = src/main.c src/http.c src/database.c src/utils.c src/api.c
+SOURCES = src/main.c src/http.c src/database.c src/utils.c src/api.c \
+	src/api_helpers.c src/products.c src/sales.c src/reports.c
+HEADERS = $(wildcard include/*.h)
 OBJECTS = $(patsubst src/%.c,$(BUILD_DIR)/%.o,$(SOURCES))
 
 .PHONY: all backend run test clean sanitize package
@@ -16,7 +18,7 @@ web/dist/browser/index.html: $(WEB_FILES) web/node_modules/.package-lock.json
 	npm --prefix web run build
 $(BUILD_DIR):
 	mkdir -p $(BUILD_DIR) data
-$(BUILD_DIR)/%.o: src/%.c include/app.h | $(BUILD_DIR)
+$(BUILD_DIR)/%.o: src/%.c $(HEADERS) | $(BUILD_DIR)
 	$(CC) $(CPPFLAGS) $(CFLAGS) -c $< -o $@
 $(BUILD_DIR)/sqlite3.o: vendor/sqlite/sqlite3.c vendor/sqlite/sqlite3.h | $(BUILD_DIR)
 	$(CC) -std=c11 -O2 -DSQLITE_THREADSAFE=1 -DSQLITE_DQS=0 -DSQLITE_OMIT_LOAD_EXTENSION -c $< -o $@
