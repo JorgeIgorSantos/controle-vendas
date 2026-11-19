@@ -1,4 +1,4 @@
-#include "app.h"
+#include "http.h"
 #include <ctype.h>
 #include <math.h>
 #include <stdio.h>
@@ -88,4 +88,15 @@ int valid_date(const char *s) {
     int days[] = {31,28,31,30,31,30,31,31,30,31,30,31};
     if (y % 4 == 0 && (y % 100 != 0 || y % 400 == 0)) days[1] = 29;
     return d >= 1 && d <= days[m - 1];
+}
+
+Response db_error(void) { return error_response(500, "Não foi possível concluir a operação no banco de dados."); }
+
+int date_filters(const Request *req, char *from, char *to) {
+    int a = query_param(req->query, "from", from, 11);
+    int b = query_param(req->query, "to", to, 11);
+    if (a < 0 || b < 0 || (a && !valid_date(from)) || (b && !valid_date(to))) return 0;
+    if (!a) strcpy(from, "1900-01-01");
+    if (!b) strcpy(to, "9999-12-31");
+    return strcmp(from, to) <= 0;
 }
