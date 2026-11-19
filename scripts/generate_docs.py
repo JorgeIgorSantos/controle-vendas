@@ -250,11 +250,11 @@ def report():
     heading(story, '3.1 Funcionalidades e requisitos técnicos', 2)
     requirements = [
         ('R01', 'Menu, retorno e encerramento', 'Três telas, botões Voltar, Ctrl+C ou docker compose stop.'),
-        ('R02', 'Struct com identificador e campos', 'Product, Sale e SaleItem em include/app.h.'),
+        ('R02', 'Struct com identificador e campos', 'Product, Sale e SaleItem em include/models.h.'),
         ('R03', 'Cadastrar, consultar, alterar e excluir', 'CRUD de produtos, código único e busca no catálogo.'),
         ('R04', 'Regras específicas', 'Cálculo monetário e baixa de estoque na mesma venda.'),
         ('R05', 'Condicionais e laços', 'Validações, processamento de itens e atendimento HTTP.'),
-        ('R06', 'Funções e modularização', 'Nove arquivos C organizados por responsabilidade.'),
+        ('R06', 'Funções e modularização', 'Fontes organizados em models, server e views.'),
         ('R07', 'Ponteiros e memória dinâmica', 'calloc dos itens, buffers dinâmicos e liberação em sucesso e falha.'),
         ('R08', 'Persistência em arquivo', 'SQLite, transações e recuperação após reinício.'),
         ('R09', 'Validação de dados', 'Tipos, campos, limites, datas, pagamento, estoque e SKU repetido.'),
@@ -288,16 +288,16 @@ def report():
     heading(story, '4.2 Organização dos módulos', 2, new_page=True)
     story.append(table(['Arquivo', 'Responsabilidade'], [
         ('src/main.c', 'Argumentos de execução, abertura do banco e inicialização.'),
-        ('src/http.c', 'Sockets, leitura de requisições, entrega da interface e encerramento.'),
-        ('src/api.c', 'Seleção das rotas e encaminhamento para cada funcionalidade.'),
-        ('src/products.c', 'Cadastro, consulta, edição e exclusão de produtos.'),
-        ('src/sales.c', 'Registro e consulta das vendas, cálculo e baixa de estoque.'),
-        ('src/reports.c', 'Quantidade de vendas concluídas e total vendido por período.'),
-        ('src/api_helpers.c', 'Conversão de consultas para JSON e filtros compartilhados.'),
-        ('src/database.c', 'Abertura do SQLite, esquema e preparação das consultas.'),
-        ('src/utils.c', 'Validações, parâmetros da URL e respostas JSON.'),
+        ('src/models/database.c', 'Abertura do SQLite, esquema e preparação das consultas.'),
+        ('src/models/queries.c', 'Execução de consultas compartilhadas e conversão das linhas para JSON.'),
+        ('src/server/http.c', 'Sockets, leitura de requisições e entrega da interface.'),
+        ('src/server/router.c', 'Seleção das rotas e encaminhamento para cada funcionalidade.'),
+        ('src/server/utils.c', 'Validações, filtros de datas, parâmetros da URL e respostas JSON.'),
+        ('src/views/produtos/', 'Handlers de listagem, busca, cadastro/edição e exclusão de produtos.'),
+        ('src/views/vendas/', 'Handlers de listagem, busca e registro de vendas com baixa de estoque.'),
+        ('src/views/sistema/', 'Saúde, encerramento e quantidade e total das vendas por período.'),
     ], [4.1 * cm, WIDTH - 4.1 * cm]))
-    paragraphs(story, 'O cabeçalho include/app.h reúne estruturas, limites e contratos da infraestrutura. Os cabeçalhos products.h, sales.h, reports.h e api_helpers.h declaram as funções dos novos módulos. No frontend, web/src/pages organiza as telas, dialogs reúne os formulários e detalhes, e shared concentra modelos, formatação e acesso à API.')
+    paragraphs(story, 'O cabeçalho include/app.h reúne os demais cabeçalhos e define a versão. models.h declara estruturas, limites e acesso ao banco; http.h define requisições, respostas e utilitários; views.h declara os handlers. Em views/produtos, salvar_produto.c atende tanto ao cadastro quanto à edição. No frontend, web/src/pages organiza as telas, dialogs reúne os formulários e detalhes, e shared concentra modelos, formatação e acesso à API.')
     heading(story, '4.3 Estruturas de dados e persistência', 2, new_page=True)
     story.append(table(['Estrutura C', 'Campos da versão atual'], [
         ('Product', 'id, sku, name, category, price_cents, stock e active.'),
@@ -311,7 +311,7 @@ def report():
         'Datas são gravadas em UTC. A exibição e os filtros por dia usam o horário de Belém, UTC-3. Na execução local, o arquivo padrão é data/vendas.db. O mesmo arquivo pode ser indicado novamente com --db para recuperar os registros.',
     )
     heading(story, '4.4 Memória dinâmica e transações', 2)
-    paragraphs(story, 'create_sale, em src/sales.c, conhece a quantidade de itens somente durante a requisição. A função usa calloc para reservar um vetor de SaleItem, verifica o resultado e libera o vetor tanto na conclusão quanto nos caminhos de erro. O servidor também usa buffers dinâmicos para processar as requisições.')
+    paragraphs(story, 'create_sale, em src/views/vendas/criar_venda.c, conhece a quantidade de itens somente durante a requisição. A função usa calloc para reservar um vetor de SaleItem, verifica o resultado e libera o vetor tanto na conclusão quanto nos caminhos de erro. O servidor também usa buffers dinâmicos para processar as requisições.')
     story.append(Preformatted(
         'sale.items = calloc((size_t)count, sizeof(*sale.items));\n'
         'if (!sale.items)\n'
@@ -395,7 +395,7 @@ def report():
     heading(story, '7 CONCLUSÃO', new_page=True)
     paragraphs(story,
         'A aplicação integra o cadastro de produtos, o registro de vendas e a consulta do total vendido. O servidor em C mantém os cálculos e as validações, enquanto Angular apresenta a interface e SQLite preserva os registros. As transações ligam a gravação da venda à atualização dos saldos.',
-        'A divisão em nove módulos C separa inicialização, HTTP, rotas, produtos, vendas, relatórios, auxiliares, banco e validações. Os testes documentados verificam os fluxos atuais, o tratamento de entradas inválidas e a recuperação dos dados após reiniciar.',
+        'A organização em models, server e views separa a persistência, a infraestrutura HTTP e os handlers de produtos, vendas e sistema. Os testes documentados verificam os fluxos atuais, o tratamento de entradas inválidas e a recuperação dos dados após reiniciar.',
         'O escopo é um controle interno local, com atendimento sequencial. Autenticação, emissão fiscal, operação remota multiusuário e cálculo de lucro podem ser considerados em trabalhos futuros. A equipe deve compreender a implementação e revisar a adequação do documento ao modelo institucional solicitado.',
     )
     heading(story, '8 REFERÊNCIAS', new_page=True)
