@@ -1,81 +1,53 @@
-ROTEIRO DE APRESENTAÇÃO — 15 MINUTOS + 5 DE PERGUNTAS
-Estácio S.A | Turma 3003 | Professora Suzane Alfaia Dias
+APRESENTAÇÃO DA APLICAÇÃO CONTROLE DE VENDAS
+Estácio S.A. Turma 3003. Professora Suzane Alfaia Dias.
+Duração sugerida: cerca de 12 minutos, com tempo adicional para demonstração e perguntas.
 
-Foram informados seis integrantes; o PDF prevê grupos de cinco. Confirmar a composição com a professora.
-Curso e cidade: preencher em docs/equipe.json. A divisão abaixo é sugestão para estudo, não comprovação de contribuições.
+COMO APRESENTAR
+Abra docs/apresentacao.html no navegador. As imagens e as fontes já estão incorporadas.
+Use as setas para navegar, F para tela cheia e N para mostrar ou ocultar as notas.
+O PDF contém um slide por página. As notas ficam no HTML e neste roteiro.
+As telas usam dados fictícios. O exemplo acompanha duas unidades de café a R$ 24,90.
 
-EQUIPE E MATRÍCULAS
-Rodrigo de Sousa Barbosa | Matrícula: 202403618168
-Manoel de Sousa Santos | Matrícula: 202402239521
-Lucas Robert Lopes Silva | Matrícula: 201902231597
-Alan Freitas Miranda | Matrícula: 202404621073
-Gabriel Henrique Maciel Leite | Matrícula: 202403628988
-Jorge Igor Dos Santos Pinto | Matrícula: 202309399989
+Controle de vendas.
+Rodrigo de Sousa Barbosa · 45 segundos
+Apresente a aplicação como um controle interno de vendas para uma pequena loja. Diga que a demonstração vai acompanhar o mesmo produto do cadastro ao relatório. A interface funciona no navegador e se comunica com um servidor em C.
 
-PREPARAÇÃO
-Executar sh iniciar.sh --db data/aula.db com um banco vazio para a demonstração.
-Abrir o navegador no endereço indicado; deixar src/api.c e include/app.h disponíveis.
-Conferir que o SKU DEMO-AULA ainda não existe; usar outro código único se necessário.
+O propósito da aplicação
+Rodrigo de Sousa Barbosa · 1 minuto
+Explique a necessidade com um exemplo cotidiano: depois de vender duas unidades de um produto, é preciso conhecer o saldo disponível e o valor da venda. A aplicação reúne essas informações para apoiar o responsável pela loja.
 
-SLIDE 01 — Sistema de controle de vendas em C 
-Apresenta: Rodrigo de Sousa Barbosa. Tempo: 1 min.
-Apresentar o tema, a equipe e o objetivo. Informar que o backend, as regras e a persistência são em C; a interface gráfica é no navegador.
+Como a aplicação é usada
+Manoel de Sousa Santos · 1 minuto
+Apresente as três telas na ordem de uso. Primeiro a loja precisa ter produtos cadastrados. Depois registra as vendas. Por fim, consulta os valores de um período. Use essa sequência para conectar os próximos slides.
 
-SLIDE 02 — Do cadastro ao resultado, um fluxo integrado. 
-Apresenta: Rodrigo de Sousa Barbosa. Tempo: 1 min.
-Explicar um exemplo: vender duas unidades e conhecer o saldo e o faturamento sem refazer contas.
+Cadastro e edição de produtos
+Manoel de Sousa Santos · 1 minuto e 15 segundos
+Mostre o produto que será usado na venda: Café especial 250 g, código CAF-001, preço de R$ 24,90 e 12 unidades em estoque. Explique que um código já existente não pode ser cadastrado novamente. Produtos sem vendas podem ser excluídos. Quando há histórico, a aplicação permite desativar o produto e preserva seus registros.
 
-SLIDE 03 — Três camadas. Uma única aplicação local. 
-Apresenta: Manoel de Sousa Santos. Tempo: 1 min.
-Mostrar src/, include/, web/ e vendor/. Explicar por que o banco não depende de um serviço separado.
+Registro de uma venda
+Lucas Robert Lopes Silva · 1 minuto e 15 segundos
+Descreva a ação do usuário: abrir Nova venda, procurar o café, adicionar duas unidades e escolher a forma de pagamento. O cliente é opcional. A interface mostra uma prévia, enquanto o servidor usa o preço do banco para calcular o valor definitivo. A seleção de pagamento registra a informação e não processa a cobrança.
 
-SLIDE 04 — Um catálogo com identidade e consistência. 
-Apresenta: Manoel de Sousa Santos. Tempo: 1 min.
-Abrir include/app.h e localizar Product. Demonstrar os controles de edição e exclusão.
+Uma venda, na prática
+Lucas Robert Lopes Silva · 1 minuto e 15 segundos
+Faça a conta com a turma: duas unidades a R$ 24,90 somam R$ 49,80. Como havia 12 unidades, o saldo passa a 10. A aplicação guarda a venda e atualiza o estoque na mesma operação. Se não houver saldo suficiente, ela recusa a venda. O comprovante serve ao controle interno e não é um documento fiscal.
 
-SLIDE 05 — O total é calculado em C. O estoque acompanha. 
-Apresenta: Lucas Robert Lopes Silva. Tempo: 1 min 30 s.
-Explicar que o frontend mostra uma prévia e o backend define os valores definitivos. Usar 2 × 24,90 + 39,90 = 89,70.
+Histórico de vendas
+Alan Freitas Miranda · 1 minuto
+Mostre a venda número 5 no histórico. Ela corresponde ao exemplo do café. Explique a busca por cliente ou número e o filtro por datas. Ao abrir a venda, o usuário confere os itens e seus valores. As outras vendas da imagem são fictícias e servem apenas para ilustrar o histórico.
 
-SLIDE 06 — Memória alocada para cada venda. 
-Apresenta: Lucas Robert Lopes Silva. Tempo: 1 min 30 s.
-Mostrar create_sale em src/api.c. Explicar sizeof, o ponteiro, a verificação da alocação e o caminho failed.
+Resultado por período
+Alan Freitas Miranda · 1 minuto
+Conecte a tela à venda demonstrada: ao selecionar somente 17 de novembro de 2026, o relatório encontra uma venda de R$ 49,80. As quatro vendas anteriores estão no histórico, mas ficam fora desse período. O total representa o valor vendido, não um cálculo de lucro.
 
-SLIDE 07 — Fechar o programa não apaga a loja. 
-Apresenta: Alan Freitas Miranda. Tempo: 2 min.
-Executar Ctrl+C, reiniciar com o mesmo argumento --db e recarregar o navegador. Comparar uma venda antes/depois. Não apagar o banco nem usar reset.
+Como os dados percorrem o sistema
+Gabriel Henrique Maciel Leite · 1 minuto e 15 segundos
+Explique cada responsabilidade sem entrar em código. O navegador é a parte com que o usuário interage. A API é o caminho pelo qual a interface conversa com o servidor. O servidor em C aplica as regras e usa o SQLite para salvar os dados. O mesmo servidor entrega a interface e a API no endereço local.
 
-SLIDE 08 — Resultados executados, com evidências. 
-Apresenta: Gabriel Henrique Maciel Leite. Tempo: 1 min.
-Abrir os resultados em artifacts/qa/ e explicar o escopo. As bibliotecas incorporadas não foram instrumentadas pelos sanitizers.
+Tecnologias utilizadas
+Gabriel Henrique Maciel Leite · 1 minuto e 15 segundos
+Associe cada tecnologia a uma função visível. C11 cuida das regras. Angular e TypeScript cuidam da interação. HTML e CSS estruturam e apresentam as telas. SQLite guarda os dados. cJSON faz a conversão de JSON. Make coordena a compilação e o projeto também oferece execução com Docker. Python apoia os testes e a geração de documentos.
 
-SLIDE 09 — Uma venda, do início ao relatório. 
-Apresenta: Gabriel Henrique Maciel Leite. Tempo: 2 min.
-Usar SKU DEMO-AULA, preço 10,00, estoque 5 e vender duas unidades. Conferir o total de R$ 20,00 e o saldo de 3 unidades. Todos os dados de demonstração são fictícios.
-
-SLIDE 10 — O movimento da loja, em números claros. 
-Apresenta: Jorge Igor Dos Santos Pinto. Tempo: 1 min 30 s.
-Selecionar o período da venda e conferir a quantidade de vendas concluídas e o total vendido.
-
-SLIDE 11 — O essencial entregue. Os próximos passos, claros. 
-Apresenta: Jorge Igor Dos Santos Pinto. Tempo: 1 min.
-Não afirmar homologação de produção. Mencionar que curso/cidade e conformidade com modelo institucional precisam de revisão.
-
-SLIDE 12 — Cada venda conta. Cada decisão tem uma razão. 
-Apresenta: Jorge Igor Dos Santos Pinto. Tempo: 30 s + perguntas.
-Encerrar a exposição em 15 minutos e abrir cinco minutos para perguntas, conforme o enunciado.
-
-RESPOSTAS QUE TODOS DEVEM DOMINAR
-1. Centavos inteiros evitam arredondamento binário de valores monetários.
-2. BEGIN IMMEDIATE, COMMIT e ROLLBACK unem a gravação da venda à baixa de todos os itens.
-3. create_sale aloca o vetor SaleItem com calloc, verifica o retorno e libera em sucesso/falha.
-4. SQLite recupera o mesmo arquivo em cada execução; os testes encerram e reabrem um processo real.
-5. O servidor recusa vendas que ultrapassam o saldo disponível.
-6. O backend em C recalcula o valor; o Angular apresenta a prévia.
-7. O período do relatório usa o horário de Belém; o banco guarda timestamps em UTC.
-8. Escopo atual: local, sem emissão fiscal e sem autenticação remota.
-
-DISTRIBUIÇÃO DOS 15 MINUTOS
-Rodrigo de Sousa Barbosa: 2 min. Manoel de Sousa Santos: 2 min. Lucas Robert Lopes Silva: 3 min.
-Alan Freitas Miranda: 2 min. Gabriel Henrique Maciel Leite: 3 min. Jorge Igor Dos Santos Pinto: 3 min.
-Após a exposição: 5 min para perguntas.
+A rotina da loja em uma aplicação
+Jorge Igor Dos Santos Pinto · 45 segundos
+Retome a sequência de uso e conclua a apresentação: cadastrar, vender e consultar o resultado. Apresente a equipe e abra espaço para perguntas. Se houver demonstração ao vivo, repita o exemplo do café em um banco de demonstração separado.

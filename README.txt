@@ -128,8 +128,17 @@ outro executável Chromium.
 
 ESTRUTURA
 ---------
-src/                main.c, http.c, api.c, database.c e utils.c
-include/app.h       structs, constantes e contratos dos módulos C
+src/main.c          argumentos e inicialização da aplicação
+src/http.c          servidor HTTP e entrega da interface
+src/api.c           roteamento das requisições da API
+src/products.c      cadastro, consulta, edição e exclusão de produtos
+src/sales.c         registro e consulta de vendas, cálculo e baixa de estoque
+src/reports.c       resumo de vendas por período
+src/api_helpers.c   conversão de consultas para JSON e filtros compartilhados
+src/database.c      abertura do SQLite e criação do esquema
+src/utils.c         validações, leitura de parâmetros e respostas JSON
+include/app.h       structs, constantes e contratos da infraestrutura
+include/            cabeçalhos de produtos, vendas, relatórios e auxiliares da API
 vendor/             SQLite e cJSON com fontes originais
 web/src/            rotas, componentes, formulários e serviço HTTP em Angular
 data/               arquivo SQLite de trabalho e exemplo.db
@@ -146,10 +155,11 @@ web/dist/browser. O servidor C entrega esses arquivos e a API no mesmo endereço
 
 DOCUMENTAÇÃO E ENTREGA
 ---------------------
-docs/relatorio-tecnico.pdf          Relatório acadêmico da versão anterior
-docs/apresentacao.pptx              Slides editáveis da versão anterior
-docs/apresentacao.pdf               Slides em PDF da versão anterior
-docs/roteiro-apresentacao.txt       Roteiro de 15 min + perguntas
+docs/relatorio-tecnico.pdf          Relatório técnico da aplicação atual
+docs/apresentacao.html              Apresentação atual, com navegação e notas
+docs/apresentacao.pdf               Mesmos 11 slides em PDF
+docs/apresentacao.pptx              Arquivo PowerPoint da versão anterior
+docs/roteiro-apresentacao.txt       Roteiro da apresentação atual
 docs/requisitos.md                  Correspondência com cada item do PDF
 docs/equipe.json                    Identificação, nomes completos e matrículas
 
@@ -159,6 +169,22 @@ O PDF prevê cinco integrantes; confirmar com a professora a equipe de seis.
 Foi usada formatação acadêmica base; o modelo institucional não foi fornecido.
 Revisar a identificação e a adequação ao modelo da faculdade antes da submissão.
 O apêndice oferece divisão sugerida, sem inventar contribuições já realizadas.
+
+Abra docs/apresentacao.html diretamente no navegador, sem iniciar o servidor.
+Use as setas para navegar, F para tela cheia e N para as notas do apresentador.
+As imagens e as fontes estão incorporadas ao HTML. Para atualizar o PDF e o
+roteiro após editar o HTML, use Chrome e as ferramentas de navegador já
+utilizadas pelos testes (python3 scripts/setup-tools.py):
+
+  node scripts/export_presentation.cjs
+
+Para atualizar somente o relatório técnico, execute antes os testes da API,
+de memória e de interface para gerar as evidências atuais em artifacts/qa/:
+
+  make test
+  make sanitize
+  node tests/test_ui.cjs
+  PYTHONPATH=.tools/python python3 scripts/generate_docs.py --report-only
 
   make package
 
