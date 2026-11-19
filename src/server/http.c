@@ -60,6 +60,18 @@ static int local_host(const char *value, int port) {
     return !strcmp(value, ipv4) || !strcmp(value, localhost);
 }
 
+static int public_host_matches(const App *app, const char *value) {
+    if (!app->public_host) return 0;
+    size_t length = strlen(app->public_host);
+    return !strncasecmp(value, app->public_host, length) &&
+        (!value[length] || !strcmp(value + length, ":443"));
+}
+
+static int allowed_origin(const App *app, const char *value, int port) {
+    return (!strncmp(value, "http://", 7) && local_host(value + 7, port)) ||
+        (!strncmp(value, "https://", 8) && public_host_matches(app, value + 8));
+}
+
 static const char *static_type(const char *name) {
     if (!strcmp(name, "index.html")) return "text/html; charset=utf-8";
     if (!strcmp(name, "favicon.svg")) return "image/svg+xml";
@@ -145,11 +157,11 @@ static void handle_client(App *app, int fd, int port) {
             send_error(fd, 400, "Transferência fragmentada não suportada."); goto done;
         } else if (!strcasecmp(line, "Content-Type")) {
             content_json = !strcasecmp(colon, "application/json") || !strncasecmp(colon, "application/json;", 17);
-        } else if (!strcasecmp(line, "Origin") && (strncmp(colon, "http://", 7) || !local_host(colon + 7, port))) {
+        } else if (!strcasecmp(line, "Origin") && !allowed_origin(app, colon, port)) {
             send_error(fd, 403, "Origem não autorizada."); goto done;
         } else if (!strcasecmp(line, "Host")) {
-            if (has_host || !local_host(colon, port)) {
-                send_error(fd, 403, "Host não autorizado. Use localhost ou 127.0.0.1."); goto done;
+            if (has_host || (!local_host(colon, port) && !public_host_matches(app, colon))) {
+                send_error(fd, 403, "Host não autorizado."); goto done;
             }
             has_host = 1;
         } else if (!strcasecmp(line, "Sec-Fetch-Site") && !strcasecmp(colon, "cross-site")) {

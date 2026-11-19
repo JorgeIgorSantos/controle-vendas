@@ -38,6 +38,7 @@ typedef struct {
 typedef struct {
     sqlite3 *db;
     const char *web_root;
+    const char *public_host;
 } App;
 
 int db_open(App *app, const char *path);

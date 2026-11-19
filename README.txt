@@ -81,6 +81,20 @@ Usar outra porta também altera o endereço no navegador.
 Por padrão, o servidor atende somente 127.0.0.1, para uso local. O parâmetro
 --host 0.0.0.0 é usado dentro do contêiner para receber o encaminhamento Docker.
 
+HOSPEDAGEM GRATUITA PARA DEMONSTRAÇÃO
+------------------------------------
+render.yaml configura o serviço Docker no plano Free do Render. Ao criar um
+Web Service, selecione este repositório, Docker, Free e /api/health como caminho
+de saúde. PORT e RENDER_EXTERNAL_HOSTNAME são reconhecidos automaticamente.
+VENDA_PUBLIC_HOST permite informar outro domínio HTTPS, sem protocolo ou porta.
+O encerramento remoto fica desativado quando um domínio público é configurado.
+
+O plano gratuito suspende o serviço após 15 minutos sem acesso. O SQLite local
+é temporário: os dados são perdidos ao suspender, reiniciar ou atualizar o
+serviço. A primeira visita após a suspensão pode levar cerca de um minuto.
+Use essa hospedagem somente com dados fictícios de demonstração.
+Limites: https://render.com/docs/free
+
 FUNCIONALIDADES
 ---------------
 Produtos: cadastrar, listar, pesquisar, editar e excluir. Informe código, nome,

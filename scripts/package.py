@@ -5,7 +5,7 @@ import zipfile
 
 ROOT=Path(__file__).resolve().parents[1]
 DEST=ROOT/'artifacts'/'entrega-controle-vendas.zip'
-required=['README.txt','Makefile','iniciar.sh','Dockerfile','compose.yaml','.dockerignore','docs/relatorio-tecnico.pdf','docs/apresentacao.pptx','docs/apresentacao.pdf','data/exemplo.db','artifacts/test-results.json','artifacts/ui-test-results.json','artifacts/sanitizer-test-results.json']
+required=['README.txt','Makefile','iniciar.sh','Dockerfile','compose.yaml','render.yaml','.dockerignore','docs/relatorio-tecnico.pdf','docs/apresentacao.pptx','docs/apresentacao.pdf','data/exemplo.db','artifacts/test-results.json','artifacts/ui-test-results.json','artifacts/sanitizer-test-results.json']
 for name in required:
     if not (ROOT/name).is_file():raise SystemExit('Entrega incompleta: falta '+name)
 files=[]
@@ -23,7 +23,7 @@ for name in qa_names:
     item = ROOT / 'artifacts' / 'qa' / name
     if item.is_file():
         files.append(item)
-for name in ['README.md','README.txt','Makefile','iniciar.sh','Dockerfile','compose.yaml','.dockerignore','THIRD_PARTY_NOTICES.txt','Projeto_Pratico_C_4_Pontos.pdf','data/exemplo.db','data/README.txt','.gitignore']:
+for name in ['README.md','README.txt','Makefile','iniciar.sh','Dockerfile','compose.yaml','render.yaml','.dockerignore','THIRD_PARTY_NOTICES.txt','Projeto_Pratico_C_4_Pontos.pdf','data/exemplo.db','data/README.txt','.gitignore']:
     files.append(ROOT/name)
 files.extend(ROOT/'web'/name for name in ['angular.json','package.json','package-lock.json','tsconfig.json'])
 with zipfile.ZipFile(DEST,'w',zipfile.ZIP_DEFLATED,compresslevel=6) as bundle:
