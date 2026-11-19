@@ -2,6 +2,8 @@
 
 Controle de vendas com frontend Angular, servidor C11 e banco SQLite. O menu tem três telas: Produtos, Vendas e Relatórios.
 
+[Abrir aplicação de demonstração](https://controle-vendas-jorgeigor.onrender.com/).
+
 ## Executar com Docker
 
 ```sh
