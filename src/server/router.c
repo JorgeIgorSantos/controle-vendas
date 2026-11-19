@@ -1,7 +1,4 @@
-#include "app.h"
-#include "products.h"
-#include "sales.h"
-#include "reports.h"
+#include "views.h"
 #include <errno.h>
 #include <stdlib.h>
 #include <string.h>
@@ -25,18 +22,8 @@ Response api_route(App *app, const Request *req) {
     int sales = !strcmp(req->path, "/api/sales");
     int reports = !strcmp(req->path, "/api/reports");
     int health = !strcmp(req->path, "/api/health");
-    if (post && !strcmp(req->path, "/api/shutdown")) {
-        cJSON *json = cJSON_CreateObject();
-        if (json) cJSON_AddStringToObject(json, "message", "Servidor encerrado. Dados preservados.");
-        Response response = json_response(200, json);
-        if (response.body) http_stop();
-        return response;
-    }
-    if (get && health) {
-        cJSON *json = cJSON_CreateObject();
-        if (json) { cJSON_AddStringToObject(json, "status", "ok"); cJSON_AddStringToObject(json, "version", APP_VERSION); }
-        return json_response(200, json);
-    }
+    if (post && !strcmp(req->path, "/api/shutdown")) return shutdown_server();
+    if (get && health) return get_health();
     if (get && reports) return get_report(app, req);
     if (get && products) return get_products(app, req);
     if (get && sales) return get_sales(app, req);
